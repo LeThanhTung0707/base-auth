@@ -15,7 +15,7 @@ export const RegisterForm = () => {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     await AuthAPI.register(email, password);
-    router.push("/dashboard");
+    router.push("/");
   };
 
   return (

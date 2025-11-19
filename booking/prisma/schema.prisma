@@ -1,0 +1,43 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Room {
+  id                  String   @id @default(uuid())
+  name                String
+  description         String?
+  price               Int
+  ownerId             String           // ID người tạo phòng
+  wardCode            Int              // Mã phường (địa chỉ mới)
+  historicalWardCode  Int?             // Mã phường cũ (nếu có)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  bookings            Booking[]
+}
+
+model Booking {
+  id         String   @id @default(uuid())
+  roomId     String
+  userId     String           // Người đặt phòng
+  fromDate   DateTime
+  toDate     DateTime
+  totalPrice Int
+  status     BookingStatus @default(PENDING)
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+
+  room       Room       @relation(fields: [roomId], references: [id])
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELED
+  COMPLETED
+}

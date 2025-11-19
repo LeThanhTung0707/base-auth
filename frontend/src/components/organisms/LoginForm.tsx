@@ -8,16 +8,19 @@ import { FormButton } from "../atoms/FormButton";
 import { AuthFooterLinks } from "../molecules/AuthFooterLinks";
 import { AuthLink } from "../atoms/AuthLink";
 import { AuthAPI } from "@/lib/auth";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     await AuthAPI.login(email, password);
+    queryClient.invalidateQueries({ queryKey: ["auth", "me"] });
     router.push("/");
   };
 

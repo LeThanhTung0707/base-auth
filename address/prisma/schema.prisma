@@ -1,0 +1,90 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+//
+// ===============================
+//   ĐỊA CHỈ MỚI (2 CẤP - HIỆN TẠI)
+// ===============================
+//
+
+model Province {
+  code         Int       @id
+  name         String
+  codename     String
+  divisionType String
+  phoneCode    Int
+
+  // Ward trực thuộc (không còn District)
+  wards        Ward[]
+
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model Ward {
+  code         Int       @id
+  name         String
+  codename     String
+  divisionType String
+
+  // Liên kết trực tiếp lên Province
+  provinceCode Int
+  province     Province  @relation(fields: [provinceCode], references: [code])
+
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+//
+// =============================================
+//   ĐỊA CHỈ CŨ (3 CẤP - PROVINCE → DISTRICT → WARD)
+// =============================================
+//
+
+model HistoricalProvince {
+  code         Int       @id
+  name         String
+  codename     String
+  divisionType String
+  phoneCode    Int
+
+  // Province cũ → District cũ
+  districts    HistoricalDistrict[]
+
+  createdAt    DateTime @default(now())
+}
+
+model HistoricalDistrict {
+  code           Int      @id
+  name           String
+  codename       String
+  divisionType   String
+
+  // Liên kết lên Province cũ
+  provinceCode   Int
+  province       HistoricalProvince @relation(fields: [provinceCode], references: [code])
+
+  // District cũ → Ward cũ
+  wards          HistoricalWard[]
+
+  createdAt      DateTime @default(now())
+}
+
+model HistoricalWard {
+  code           Int      @id
+  name           String
+  codename       String
+  divisionType   String
+
+  // Liên kết lên District cũ
+  districtCode   Int
+  district       HistoricalDistrict @relation(fields: [districtCode], references: [code])
+
+  createdAt      DateTime @default(now())
+}

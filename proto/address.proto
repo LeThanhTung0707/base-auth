@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package address;
+
+service AddressService {
+  rpc IsValidWard (WardRequest) returns (ValidationResponse);
+  rpc IsValidHistoricalWard (WardRequest) returns (ValidationResponse);
+  rpc GetWardDetail (WardRequest) returns (WardDetailResponse);
+  rpc GetHistoricalWardDetail (WardRequest) returns (WardDetailResponse);
+}
+
+message WardRequest {
+  int32 code = 1;
+}
+
+message ValidationResponse {
+  bool isValid = 1;
+}
+
+message WardDetailResponse {
+  int32 code = 1;
+  string name = 2;              // Phường/Xã
+  string districtName = 3;      // Có thể rỗng nếu địa chỉ mới
+  string provinceName = 4;
+}

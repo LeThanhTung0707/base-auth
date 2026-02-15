@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      target: dev
+    command: sh -c "npx prisma migrate deploy && npm run start:dev"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    environment:
+      NODE_ENV: development
+
+  booking:
+    build:
+      target: dev
+    command: sh -c "npx prisma migrate deploy && npm run start:dev"
+    volumes:
+      - ./booking:/app
+      - /app/node_modules
+    environment:
+      NODE_ENV: development
+
+  address:
+    build:
+      target: dev
+    command: sh -c "npx prisma migrate deploy && npm run start:dev"
+    volumes:
+      - ./address:/app
+      - /app/node_modules
+    environment:
+      NODE_ENV: development
+
+  frontend:
+    build:
+      target: dev
+    command: npm run dev
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      NODE_ENV: development

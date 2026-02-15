@@ -7,9 +7,18 @@ import { RoomModule } from './room/room.module';
 
 import { AddressGrpcClientModule } from './grpc/address-grpc-client.module';
 import { RequestLoggerMiddleware } from './common/logger/request-logger.middleware';
+import { ConfigModule } from '@nestjs/config';
+import { RedisModule } from './redis/redis.module';
 
 @Module({
-  imports: [PrismaModule, BookingModule, RoomModule, AddressGrpcClientModule],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    RedisModule,
+    PrismaModule, 
+    BookingModule, 
+    RoomModule, 
+    AddressGrpcClientModule
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -4,9 +4,16 @@ import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { AddressModule } from './address/address.module';
 import { RequestLoggerMiddleware } from './common/logger/request-logger.middleware';
+import { ConfigModule } from '@nestjs/config';
+import { RedisModule } from './redis/redis.module';
 
 @Module({
-  imports: [PrismaModule, AddressModule],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    RedisModule,
+    PrismaModule, 
+    AddressModule
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

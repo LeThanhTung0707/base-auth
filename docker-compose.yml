@@ -1,0 +1,91 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: baseauth_db
+      POSTGRES_MULTIPLE_DATABASES: backend_db,booking_db,address_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres:/docker-entrypoint-initdb.d
+
+  redis:
+    image: redis:7-alpine
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    restart: always
+    ports:
+      - "4000:4000"
+    command: sh -c "npx prisma migrate deploy && node dist/main.js"
+    environment:
+      DATABASE_URL: postgres://user:password@postgres:5432/backend_db
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      PORT: 4000
+    depends_on:
+      - postgres
+      - redis
+
+  booking:
+    build:
+      context: .
+      dockerfile: booking/Dockerfile
+    restart: always
+    ports:
+      - "4001:4001"
+    command: sh -c "npx prisma migrate deploy && node dist/main.js"
+    environment:
+      DATABASE_URL: postgres://user:password@postgres:5432/booking_db
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      PORT: 4001
+    depends_on:
+      - postgres
+      - redis
+
+  address:
+    build:
+      context: .
+      dockerfile: address/Dockerfile
+    restart: always
+    ports:
+      - "4002:4002"
+    command: sh -c "npx prisma migrate deploy && node dist/src/main.js"
+    environment:
+      DATABASE_URL: postgres://user:password@postgres:5432/address_db
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      PORT: 4002
+    depends_on:
+      - postgres
+      - redis
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:4000 # Adjust if using Nginx reverse proxy later
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
+  redis_data:

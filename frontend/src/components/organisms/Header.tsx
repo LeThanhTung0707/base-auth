@@ -4,6 +4,7 @@ import { Logo } from "@/components/atoms/Logo";
 import { SearchBar } from "@/components/molecules/SearchBar";
 import { UserMenu } from "@/components/molecules/UserMenu";
 import { ServiceTabs } from "@/components/molecules/ServiceTabs";
+import { NotificationMenu } from "@/components/molecules/NotificationMenu";
 
 export function Header() {
   return (
@@ -19,7 +20,8 @@ export function Header() {
                  <ServiceTabs />
             </div>
             
-            <div className="flex justify-end">
+            <div className="flex justify-end items-center gap-2">
+                <NotificationMenu />
                 <UserMenu />
             </div>
         </div>

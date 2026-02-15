@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { RoomService } from './room.service';
 import { CreateRoomDto } from './dto/create-room.dto';
@@ -21,8 +22,8 @@ export class RoomController {
   }
 
   @Get()
-  findAll() {
-    return this.roomService.findAll();
+  findAll(@Query('category') category?: string) {
+    return this.roomService.findAll(category);
   }
 
   @Get(':id')

@@ -12,6 +12,7 @@ model Room {
   name                String
   description         String?
   price               Int
+  category            String?          // Loại phòng (Beachfront, Cabins, etc.)
   ownerId             String           // ID người tạo phòng
   wardCode            Int              // Mã phường (địa chỉ mới)
   historicalWardCode  Int?             // Mã phường cũ (nếu có)

@@ -8,6 +8,10 @@ export class CreateRoomDto {
   @IsString()
   description?: string;
 
+  @IsString()
+  @IsOptional()
+  category?: string;
+
   @IsInt()
   @Min(0)
   price: number;

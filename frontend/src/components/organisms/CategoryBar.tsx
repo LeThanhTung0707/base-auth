@@ -4,25 +4,23 @@ import { CategoryItem } from "@/components/molecules/CategoryItem";
 import { 
   Umbrella, 
   Tent, 
-  Mountain, 
+  Flame, 
   Waves, 
   Building2, 
   TreePine, 
-  Ship,
-  Castle,
-  Warehouse,
-  Sofa,
-  Palmtree,
-  Snowflake
+  Ship, 
+  Castle, 
+  Warehouse, 
+  Sofa, 
+  Palmtree, 
+  Snowflake 
 } from "lucide-react";
 import { useState } from "react";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-
 
 const CATEGORIES = [
   { label: "Beachfront", icon: Umbrella },
   { label: "Cabins", icon: Tent },
-  { label: "Trending", icon: Mountain },
+  { label: "Trending", icon: Flame },
   { label: "Lakefront", icon: Waves },
   { label: "City", icon: Building2 },
   { label: "Countryside", icon: TreePine },
@@ -34,26 +32,26 @@ const CATEGORIES = [
   { label: "Arctic", icon: Snowflake },
 ];
 
-export function CategoryBar() {
-  const [activeCategory, setActiveCategory] = useState("Beachfront");
+interface CategoryBarProps {
+  activeCategory: string;
+  onCategorySelect: (category: string) => void;
+}
 
+export function CategoryBar({ activeCategory, onCategorySelect }: CategoryBarProps) {
   return (
-    <div className="w-full border-b bg-background pt-4">
-        <div className="container mx-auto px-4">
-            <ScrollArea className="w-full whitespace-nowrap">
-                <div className="flex w-max space-x-8 pb-2">
-                    {CATEGORIES.map((category) => (
-                    <CategoryItem
-                        key={category.label}
-                        icon={category.icon}
-                        label={category.label}
-                        isActive={activeCategory === category.label}
-                        onClick={() => setActiveCategory(category.label)}
-                    />
-                    ))}
-                </div>
-                <ScrollBar orientation="horizontal" className="invisible sm:visible" />
-            </ScrollArea>
+    <div className="w-full border-b bg-background sticky top-[80px] z-40 pt-4 pb-2">
+      <div className="container mx-auto px-4">
+        <div className="flex items-center gap-8 overflow-x-auto no-scrollbar scroll-smooth">
+          {CATEGORIES.map((category) => (
+            <CategoryItem
+              key={category.label}
+              icon={category.icon}
+              label={category.label}
+              isActive={activeCategory === category.label}
+              onClick={() => onCategorySelect(category.label)}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

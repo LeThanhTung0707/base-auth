@@ -14,7 +14,14 @@ const MOCK_LISTINGS = Array.from({ length: 12 }).map((_, i) => ({
   ratingCount: 10 + i * 5,
 }));
 
-export function ListingGrid() {
+interface ListingGridProps {
+    category?: string;
+}
+
+export function ListingGrid({ category }: ListingGridProps) {
+  // TODO: Fetch data from API based on category
+  console.log("Fetching listings for category:", category);
+  
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-6 gap-y-10 pb-20">
       {MOCK_LISTINGS.map((listing) => (

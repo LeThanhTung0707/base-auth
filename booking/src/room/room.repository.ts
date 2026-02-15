@@ -11,8 +11,15 @@ export class RoomRepository {
     return this.prisma.room.create({ data });
   }
 
-  findAll() {
-    return this.prisma.room.findMany({ orderBy: { createdAt: 'desc' } });
+  findAll(category?: string) {
+    const where = category ? { category } : {};
+    return this.prisma.room.findMany({ 
+      where, 
+      orderBy: { createdAt: 'desc' },
+      include: {
+        bookings: false, // We don't need bookings for listing
+      } 
+    });
   }
 
   findById(id: string) {

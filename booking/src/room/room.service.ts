@@ -56,8 +56,8 @@ export class RoomService {
     return this.repo.create(dto);
   }
 
-  findAll() {
-    return this.repo.findAll();
+  findAll(category?: string) {
+    return this.repo.findAll(category);
   }
 
   async findOne(id: string) {

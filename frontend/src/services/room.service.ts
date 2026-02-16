@@ -72,5 +72,22 @@ export const RoomService = {
     }
 
     return res.json();
+  },
+
+  async updateRoom(id: string, data: Partial<CreateRoomDto>): Promise<Room> {
+    const res = await fetch(`${BOOKING_API_URL}/rooms/${id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || `Failed to update room: ${res.statusText}`);
+    }
+
+    return res.json();
   }
 };

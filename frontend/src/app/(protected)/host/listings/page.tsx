@@ -4,9 +4,12 @@ import { useAuthStore } from "@/store/authStore";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Plus, Edit, Trash } from "lucide-react";
+import { ArrowLeft, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { RoomService, Room } from "@/services/room.service";
+import { EmptyState } from "@/components/molecules/EmptyState";
+import { HostListingsTable } from "@/components/organisms/HostListingsTable";
+import { toast } from "react-toastify";
 
 
 
@@ -31,6 +34,7 @@ export default function HostListingsPage() {
         setRooms(data);
       } catch (error) {
         console.error("Failed to fetch rooms", error);
+        toast.error("Không thể tải danh sách tài sản.");
       } finally {
         setLoading(false);
       }
@@ -39,7 +43,7 @@ export default function HostListingsPage() {
     fetchRooms();
   }, [user, router]);
 
-  if (!user || !user.roles?.includes("HOST")) {
+  if (!user || (!user.roles?.includes("HOST") && !user.roles?.includes("ADMIN"))) {
       return null;
   }
 
@@ -71,60 +75,14 @@ export default function HostListingsPage() {
             ))}
         </div>
       ) : rooms.length === 0 ? (
-        <div className="text-center py-20 bg-muted/10 rounded-lg border border-dashed text-muted-foreground">
-          <p className="mb-4">Bạn chưa có căn hộ nào.</p>
-          <Link href="/host/create-listing" className="text-primary hover:underline">Tạo ngay căn đầu tiên</Link>
-        </div>
+        <EmptyState 
+            title="Bạn chưa có căn hộ nào"
+            description="Hãy bắt đầu kiếm tiền bằng cách đăng tải căn hộ đầu tiên của bạn."
+            actionLabel="Tạo ngay căn đầu tiên"
+            actionLink="/host/create-listing"
+        />
       ) : (
-        <div className="border rounded-lg overflow-hidden">
-            <table className="w-full text-sm text-left">
-                <thead className="bg-muted/50 text-muted-foreground font-medium border-b">
-                    <tr>
-                        <th className="py-3 px-4">Tên căn</th>
-                        <th className="py-3 px-4">Danh mục</th>
-                        <th className="py-3 px-4">Giá</th>
-                        <th className="py-3 px-4">Trạng thái</th>
-                        <th className="py-3 px-4 text-right">Hành động</th>
-                    </tr>
-                </thead>
-                <tbody className="divide-y">
-                    {rooms.map((room) => (
-                        <tr key={room.id} className="hover:bg-muted/10 transition-colors">
-                            <td className="py-3 px-4">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 bg-muted rounded overflow-hidden relative">
-                                        {/* Placeholder Image */}
-                                        <img 
-                                            src={`https://picsum.photos/seed/${room.id}/50/50`} 
-                                            alt={room.name}
-                                            className="object-cover w-full h-full"
-                                        />
-                                    </div>
-                                    <span className="font-medium">{room.name}</span>
-                                </div>
-                            </td>
-                            <td className="py-3 px-4 text-muted-foreground">{room.category || "Chưa phân loại"}</td>
-                            <td className="py-3 px-4 font-medium">${room.price}</td>
-                            <td className="py-3 px-4">
-                                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
-                                    Đang hoạt động
-                                </span>
-                            </td>
-                            <td className="py-3 px-4 text-right">
-                                <div className="flex justify-end gap-2">
-                                    <Button variant="ghost" size="icon" className="h-8 w-8">
-                                        <Edit className="w-4 h-4" />
-                                    </Button>
-                                    <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive">
-                                        <Trash className="w-4 h-4" />
-                                    </Button>
-                                </div>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
+        <HostListingsTable rooms={rooms} />
       )}
     </div>
   );

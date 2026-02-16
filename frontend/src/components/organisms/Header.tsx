@@ -7,6 +7,7 @@ import { UserMenu } from "@/components/molecules/UserMenu";
 import { ServiceTabs } from "@/components/molecules/ServiceTabs";
 import { NotificationMenu } from "@/components/molecules/NotificationMenu";
 import { useAuthStore } from "@/store/authStore";
+import { Button } from "../ui/button";
 
 export function Header() {
   const { user } = useAuthStore();
@@ -24,15 +25,34 @@ export function Header() {
             </div>
             
             <div className="flex justify-end items-center gap-2">
-                {user?.roles?.includes('HOST') && (
-                  <Link href="/host/listings">
-                    <button className="text-sm font-semibold hover:bg-muted px-4 py-2 rounded-full transition-colors">
-                        Quản lý căn hiện có
-                    </button>
-                  </Link>
+                {user ? (
+                  <>
+                    {user?.roles?.includes('HOST') ? (
+                      <Link href="/host/listings">
+                        <button className="text-sm font-semibold hover:bg-muted px-4 py-2 rounded-full transition-colors">
+                            Quản lý căn hiện có
+                        </button>
+                      </Link>
+                    ) : (
+                      <Link href="/host/create-listing">
+                        <Button variant="ghost" className="hidden md:flex rounded-full">
+                          Trở thành người cho thuê
+                        </Button>
+                      </Link>
+                    )}
+                    <NotificationMenu />
+                    <UserMenu />
+                  </>
+                ) : (
+                  <div className="flex items-center gap-2">
+                     <Link href="/login">
+                        <Button variant="ghost" className="font-medium">Đăng nhập</Button>
+                     </Link>
+                     <Link href="/register">
+                        <Button className="font-medium">Đăng ký</Button>
+                     </Link>
+                  </div>
                 )}
-                <NotificationMenu />
-                <UserMenu />
             </div>
         </div>
         

@@ -6,7 +6,7 @@ import { ListingGrid } from "@/components/organisms/ListingGrid";
 import { useState } from "react";
 
 export function HomeTemplate() {
-  const [activeCategory, setActiveCategory] = useState<string>("Beachfront");
+  const [activeCategory, setActiveCategory] = useState<string>("");
 
   return (
     <div className="flex flex-col min-h-screen">

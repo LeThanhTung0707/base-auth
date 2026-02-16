@@ -25,4 +25,8 @@ export class UsersService {
     const ok = await this.hashing.compare(password, u.password);
     return ok ? u : null;
   }
+
+  findById(id: string) {
+    return this.repo.findById(id);
+  }
 }

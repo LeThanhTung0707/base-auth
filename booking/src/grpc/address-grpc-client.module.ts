@@ -10,8 +10,8 @@ import { join } from 'path';
         transport: Transport.GRPC,
         options: {
           package: 'address',
-          protoPath: join(__dirname, '../../../proto/address.proto'),
-          url: 'localhost:50051',
+          protoPath: join(process.cwd(), 'proto/address.proto'),
+          url: 'address:50051',
         },
       },
     ]),

@@ -9,6 +9,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { UsersService } from '../users/users.service';
 import {
   setAuthCookies,
   clearAuthCookies,
@@ -27,7 +28,10 @@ class AuthDto {
 @Controller('auth')
 @UseInterceptors(CsrfInterceptor)
 export class AuthController {
-  constructor(private auth: AuthService) {}
+  constructor(
+    private auth: AuthService,
+    private usersService: UsersService,
+  ) {}
 
   @Post('register')
   async register(
@@ -97,7 +101,11 @@ export class AuthController {
 
   @Get('me')
   @UseGuards(AuthCsrfGuard)
-  getMe(@User() user) {
-    return user;
+  async getMe(@User() user) {
+    const u = await this.usersService.findById(user.sub);
+    if (!u) return null;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...rest } = u;
+    return rest;
   }
 }

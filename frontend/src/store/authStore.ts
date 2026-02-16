@@ -4,6 +4,7 @@ import { create } from "zustand";
 export interface User {
   id: string;
   email: string;
+  roles?: string[];
 }
 
 interface AuthState {

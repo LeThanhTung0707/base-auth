@@ -12,6 +12,7 @@ async function bootstrap() {
   });
 
   app.useGlobalFilters(new AllExceptionsFilter());
+  app.enableCors();
 
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.GRPC,

@@ -18,18 +18,14 @@ import {
 import { useState } from "react";
 
 const CATEGORIES = [
-  { label: "Beachfront", icon: Umbrella },
-  { label: "Cabins", icon: Tent },
-  { label: "Trending", icon: Flame },
-  { label: "Lakefront", icon: Waves },
-  { label: "City", icon: Building2 },
-  { label: "Countryside", icon: TreePine },
-  { label: "Boats", icon: Ship },
-  { label: "Castles", icon: Castle },
-  { label: "Farms", icon: Warehouse },
-  { label: "Luxe", icon: Sofa },
-  { label: "Tropical", icon: Palmtree },
-  { label: "Arctic", icon: Snowflake },
+  { label: "Bãi biển", icon: Umbrella },
+  { label: "Thành phố", icon: Building2 },
+  { label: "Nông thôn", icon: TreePine },
+  { label: "Núi", icon: Tent },
+  { label: "Đảo", icon: Palmtree },
+  { label: "Hoang dã", icon: Flame },
+  { label: "Sang trọng", icon: Sofa },
+  { label: "Khác", icon: Snowflake },
 ];
 
 interface CategoryBarProps {

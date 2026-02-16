@@ -35,11 +35,12 @@ export class RoomService {
   async create(dto: CreateRoomDto) {
     const { wardCode, historicalWardCode } = dto;
 
+    // Validating against Historical Ward because we are using the Historical Address system
     const wardRes = await firstValueFrom(
-      this.addressService.isValidWard({ code: wardCode }),
+      this.addressService.isValidHistoricalWard({ code: wardCode }),
     );
     if (!wardRes.isValid) {
-      throw new BadRequestException(`wardCode ${wardCode} không tồn tại`);
+      throw new BadRequestException(`wardCode ${wardCode} không tồn tại (trong dữ liệu cũ)`);
     }
 
     if (historicalWardCode) {
@@ -56,8 +57,8 @@ export class RoomService {
     return this.repo.create(dto);
   }
 
-  findAll(category?: string) {
-    return this.repo.findAll(category);
+  findAll(category?: string, ownerId?: string) {
+    return this.repo.findAll(category, ownerId);
   }
 
   async findOne(id: string) {

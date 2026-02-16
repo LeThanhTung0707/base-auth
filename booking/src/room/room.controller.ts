@@ -22,8 +22,11 @@ export class RoomController {
   }
 
   @Get()
-  findAll(@Query('category') category?: string) {
-    return this.roomService.findAll(category);
+  findAll(
+    @Query('category') category?: string,
+    @Query('ownerId') ownerId?: string,
+  ) {
+    return this.roomService.findAll(category, ownerId);
   }
 
   @Get(':id')

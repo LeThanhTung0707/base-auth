@@ -2,77 +2,95 @@ import { PrismaClient } from '@prisma/client';
 import axios from 'axios';
 
 const prisma = new PrismaClient();
-const BASE_URL = 'https://provinces.open-api.vn/api/v1';
 
 async function main() {
-  console.log('🔄 Fetch danh sách tỉnh cũ (3 cấp)...');
-  const provincesRes = await axios.get(`${BASE_URL}/p`);
-  const provinces = provincesRes.data as any[];
+  console.log('🚀 Bắt đầu nạp dữ liệu địa chỉ (Historical)...');
 
-  for (const province of provinces) {
-    console.log(`➡️ Tỉnh: ${province.name}`);
+  try {
+    // 1. Fetch data from API
+    console.log('📥 Đang tải dữ liệu từ https://provinces.open-api.vn/api/?depth=3 ...');
+    const response = await axios.get('https://provinces.open-api.vn/api/?depth=3');
+    const provinces = response.data;
 
-    // Fetch chi tiết tỉnh có district + ward
-    const { data: fullProvince } = await axios.get(
-      `${BASE_URL}/p/${province.code}?depth=3`,
-    );
+    console.log(`✅ Đã tải ${provinces.length} tỉnh/thành.`);
 
-    // Insert HistoricalProvince
-    const createdProvince = await prisma.historicalProvince.upsert({
-      where: { code: fullProvince.code },
-      update: {},
-      create: {
-        code: fullProvince.code,
-        name: fullProvince.name,
-        codename: fullProvince.codename,
-        divisionType: fullProvince.division_type,
-        phoneCode: fullProvince.phone_code,
-      },
-    });
+    // 2. Insert Data
+    for (const p of provinces) {
+      console.log(`Processing Province: ${p.name} (${p.code})`);
 
-    // Insert districts
-    for (const district of fullProvince.districts || []) {
-      console.log(`   └─ 🏢 Quận/Huyện: ${district.name}`);
-
-      const createdDistrict = await prisma.historicalDistrict.upsert({
-        where: { code: district.code },
-        update: {},
+      // Upsert Province
+      await prisma.historicalProvince.upsert({
+        where: { code: p.code },
+        update: {
+          name: p.name,
+          codename: p.codename,
+          divisionType: p.division_type,
+          phoneCode: p.phone_code,
+        },
         create: {
-          code: district.code,
-          name: district.name,
-          codename: district.codename,
-          divisionType: district.division_type,
-          provinceCode: createdProvince.code,
+          code: p.code,
+          name: p.name,
+          codename: p.codename,
+          divisionType: p.division_type,
+          phoneCode: p.phone_code,
         },
       });
 
-      // Insert wards
-      for (const ward of district.wards || []) {
-        console.log(`       └─ 🏘 Phường/Xã: ${ward.name}`);
-
-        await prisma.historicalWard.upsert({
-          where: { code: ward.code },
-          update: {},
+      // Process Districts
+      for (const d of p.districts) {
+        // Upsert District
+        await prisma.historicalDistrict.upsert({
+          where: { code: d.code },
+          update: {
+            name: d.name,
+            codename: d.codename,
+            divisionType: d.division_type,
+            provinceCode: p.code,
+          },
           create: {
-            code: ward.code,
-            name: ward.name,
-            codename: ward.codename,
-            divisionType: ward.division_type,
-            districtCode: createdDistrict.code,
+            code: d.code,
+            name: d.name,
+            codename: d.codename,
+            divisionType: d.division_type,
+            provinceCode: p.code,
           },
         });
+
+        // Process Wards
+        if (d.wards && d.wards.length > 0) {
+            // Batch create wards is faster, but let's loop for safety/upsert or use createMany if confident.
+            // Using loop with upsert to be safe against re-runs.
+            // Optimization: Promise.all for wards in a district
+            const wardPromises = d.wards.map((w: any) => 
+                prisma.historicalWard.upsert({
+                    where: { code: w.code },
+                    update: {
+                        name: w.name,
+                        codename: w.codename,
+                        divisionType: w.division_type,
+                        districtCode: d.code,
+                    },
+                    create: {
+                        code: w.code,
+                        name: w.name,
+                        codename: w.codename,
+                        divisionType: w.division_type,
+                        districtCode: d.code,
+                    },
+                })
+            );
+            await Promise.all(wardPromises);
+        }
       }
     }
-  }
 
-  console.log('✅ Đã seed xong địa chỉ cũ (3 cấp)!');
+    console.log('🎉 Hoàn tất nạp dữ liệu!');
+  } catch (error) {
+    console.error('❌ Lỗi khi nạp dữ liệu:', error);
+    process.exit(1);
+  } finally {
+    await prisma.$disconnect();
+  }
 }
 
-main()
-  .catch((e) => {
-    console.error('❌ Lỗi seeding:', e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+main();

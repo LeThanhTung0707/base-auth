@@ -11,8 +11,11 @@ export class RoomRepository {
     return this.prisma.room.create({ data });
   }
 
-  findAll(category?: string) {
-    const where = category ? { category } : {};
+  findAll(category?: string, ownerId?: string) {
+    const where: any = {};
+    if (category) where.category = category;
+    if (ownerId) where.ownerId = ownerId;
+
     return this.prisma.room.findMany({ 
       where, 
       orderBy: { createdAt: 'desc' },

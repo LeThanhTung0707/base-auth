@@ -12,7 +12,7 @@ export function Logo({ className }: LogoProps) {
       className={`flex items-center gap-2 font-bold text-xl text-primary ${className}`}
     >
       <Home className="h-6 w-6" />
-      <span>ThanhTung-AllInOne</span>
+      <span>Thanh Tùng AllInOne</span>
     </Link>
   );
 }

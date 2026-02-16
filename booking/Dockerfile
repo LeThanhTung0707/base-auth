@@ -2,7 +2,7 @@ FROM node:20-alpine AS dev
 WORKDIR /app
 COPY booking/package*.json ./
 COPY booking/prisma ./prisma/
-COPY proto /proto
+COPY proto ./proto
 RUN npm install
 COPY booking/ .
 CMD ["npm", "run", "start:dev"]
@@ -13,7 +13,7 @@ WORKDIR /app
 
 COPY booking/package*.json ./
 COPY booking/prisma ./prisma/
-COPY proto /proto
+COPY proto ./proto
 
 RUN npm install
 
@@ -30,7 +30,7 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /proto /proto
+COPY --from=builder /app/proto ./proto
 
 EXPOSE 4001
 

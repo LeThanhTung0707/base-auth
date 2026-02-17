@@ -5,9 +5,9 @@ services:
     image: postgres:15-alpine
     restart: always
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: baseauth_db
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_MULTIPLE_DATABASES: backend_db,booking_db,address_db
     ports:
       - "5433:5432"
@@ -32,12 +32,12 @@ services:
       - "4000:4000"
     command: sh -c "npx prisma migrate deploy && node dist/main.js"
     environment:
-      DATABASE_URL: postgres://user:password@postgres:5432/backend_db
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/backend_db
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
       PORT: 4000
-      JWT_ACCESS_SECRET: supersecretaccess
-      JWT_REFRESH_SECRET: supersecretrefresh
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
       ACCESS_TTL_MIN: 15
       REFRESH_TTL_DAYS: 14
       CSRF_TTL_DAYS: 14
@@ -54,10 +54,11 @@ services:
       - "4001:4001"
     command: sh -c "npx prisma migrate deploy && node dist/main.js"
     environment:
-      DATABASE_URL: postgres://user:password@postgres:5432/booking_db
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/booking_db
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
       PORT: 4001
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET}
     depends_on:
       - postgres
       - redis
@@ -71,9 +72,9 @@ services:
       - "4002:4002"
     command: sh -c "npx prisma migrate deploy && node dist/src/main.js"
     environment:
-      DATABASE_URL: postgres://user:password@postgres:5432/address_db
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/address_db
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
       PORT: 4002
     depends_on:
       - postgres

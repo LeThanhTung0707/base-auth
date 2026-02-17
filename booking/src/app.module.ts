@@ -1,4 +1,5 @@
 import { MiddlewareConsumer, Module } from '@nestjs/common';
+import { JwtModule } from '@nestjs/jwt';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
@@ -13,6 +14,7 @@ import { RedisModule } from './redis/redis.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    JwtModule.register({ global: true }),
     RedisModule,
     PrismaModule, 
     BookingModule, 

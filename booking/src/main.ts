@@ -5,11 +5,14 @@ import { AllExceptionsFilter } from './common/filters/http-exception.filter';
 import { WinstonModule } from 'nest-winston';
 import { winstonConfig } from './common/logger/logger.config';
 
+import * as cookieParser from 'cookie-parser';
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: WinstonModule.createLogger(winstonConfig),
   });
 
+  app.use(cookieParser());
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   app.enableCors();
   app.useGlobalFilters(new AllExceptionsFilter());

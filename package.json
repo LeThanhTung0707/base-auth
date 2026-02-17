@@ -1,0 +1,13 @@
+{
+  "name": "base-auth-root",
+  "version": "1.0.0",
+  "description": "Root package for BaseAuth microservices",
+  "scripts": {
+    "docker:dev": "docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build",
+    "docker:prod": "docker-compose up -d --build",
+    "docker:down": "docker-compose down"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

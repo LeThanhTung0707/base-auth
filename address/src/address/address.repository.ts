@@ -37,4 +37,22 @@ export class AddressRepository {
       orderBy: { name: 'asc' },
     });
   }
+
+  async getHistoricalProvince(code: number) {
+    return await this.prisma.historicalProvince.findUnique({
+      where: { code },
+    });
+  }
+
+  async getHistoricalDistrict(code: number) {
+    return await this.prisma.historicalDistrict.findUnique({
+      where: { code },
+    });
+  }
+
+  async getHistoricalWard(code: number) {
+    return await this.prisma.historicalWard.findUnique({
+      where: { code },
+    });
+  }
 }

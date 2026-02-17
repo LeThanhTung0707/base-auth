@@ -8,28 +8,70 @@ import { ServiceTabs } from "@/components/molecules/ServiceTabs";
 import { NotificationMenu } from "@/components/molecules/NotificationMenu";
 import { useAuthStore } from "@/store/authStore";
 import { Button } from "../ui/button";
+import { useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
 
 export function Header() {
   const { user } = useAuthStore();
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+        setIsScrolled(window.scrollY > 20); // Small threshold to avoid flicker
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur-xs supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto px-4 py-4 flex flex-col gap-4">
-        {/* Top Row: Logo - Tabs - UserMenu */}
-        <div className="grid grid-cols-[1fr_auto_1fr] items-center">
+    <header 
+        className={cn(
+            "sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur-xs transition-all duration-300 ease-in-out",
+            isScrolled ? "h-20 shadow-sm" : "h-40"
+        )}
+    >
+      <div className="container mx-auto px-4 h-full flex flex-col justify-between relative">
+        
+        {/* Top Row: Logo - Center - UserMenu */}
+        <div className="grid grid-cols-[1fr_auto_1fr] items-center pt-4 relative z-20">
+            {/* Logo */}
             <div className="flex justify-start">
-                <Logo />
+                <Link href="/">
+                    <Logo />
+                </Link>
             </div>
             
-            <div className="flex justify-center">
-                 <ServiceTabs />
+            {/* Center Area: Tabs (Large) -> Search (Small) */}
+            <div className="flex justify-center h-12 w-full max-w-[500px] relative">
+                 {/* Tabs: Fade out when scrolled */}
+                 <div 
+                    className={cn(
+                        "absolute inset-0 flex justify-center transition-all duration-300 transform",
+                        isScrolled ? "opacity-0 scale-50 pointer-events-none -translate-y-4" : "opacity-100 scale-100 translate-y-0"
+                    )}
+                 >
+                    <ServiceTabs />
+                 </div>
+
+                 {/* Compact Search: Fade in when scrolled */}
+                 <div 
+                    className={cn(
+                        "absolute inset-0 flex justify-center transition-all duration-300 transform",
+                        isScrolled ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-75 pointer-events-none translate-y-4"
+                    )}
+                 >
+                     <SearchBar compact />
+                 </div>
             </div>
             
+            {/* User Menu */}
             <div className="flex justify-end items-center gap-2">
                 {user ? (
                   <>
                     {user?.roles?.includes('HOST') ? (
                       <Link href="/host/listings">
-                        <button className="text-sm font-semibold hover:bg-muted px-4 py-2 rounded-full transition-colors">
+                        <button className="text-sm font-semibold hover:bg-muted px-4 py-2 rounded-full transition-colors whitespace-nowrap">
                             Quản lý căn hiện có
                         </button>
                       </Link>
@@ -56,8 +98,14 @@ export function Header() {
             </div>
         </div>
         
-        {/* Bottom Row: Search Bar */}
-        <div className="flex justify-center pb-2">
+        {/* Bottom Row: Large Search Bar */}
+        {/* Scale down and fade out when scrolled */}
+        <div 
+            className={cn(
+                "absolute left-0 right-0 top-20 flex justify-center transition-all duration-300 ease-in-out transform origin-top",
+                isScrolled ? "opacity-0 scale-50 pointer-events-none -translate-y-10" : "opacity-100 scale-100 translate-y-0"
+            )}
+        >
             <SearchBar />
         </div>
       </div>

@@ -33,4 +33,22 @@ export class AddressService {
     if (!result.length) throw new NotFoundException('Không có phường/xã cũ');
     return result;
   }
+
+  async getHistoricalProvince(code: number) {
+    const result = await this.repo.getHistoricalProvince(code);
+    if (!result) throw new NotFoundException('Không tìm thấy tỉnh/thành phố');
+    return result;
+  }
+
+  async getHistoricalDistrict(code: number) {
+    const result = await this.repo.getHistoricalDistrict(code);
+    if (!result) throw new NotFoundException('Không tìm thấy quận/huyện');
+    return result;
+  }
+
+  async getHistoricalWard(code: number) {
+    const result = await this.repo.getHistoricalWard(code);
+    if (!result) throw new NotFoundException('Không tìm thấy phường/xã');
+    return result;
+  }
 }

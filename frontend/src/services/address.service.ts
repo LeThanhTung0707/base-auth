@@ -46,5 +46,23 @@ export const AddressService = {
     const res = await fetch(`${ADDRESS_API_URL}/address/historical/wards?districtCode=${districtCode}`);
     if (!res.ok) throw new Error('Failed to fetch wards');
     return res.json();
+  },
+
+  async getProvince(code: number): Promise<Province> {
+    const res = await fetch(`${ADDRESS_API_URL}/address/historical/province/${code}`);
+    if (!res.ok) throw new Error('Failed to fetch province');
+    return res.json();
+  },
+
+  async getDistrict(code: number): Promise<District> {
+    const res = await fetch(`${ADDRESS_API_URL}/address/historical/district/${code}`);
+    if (!res.ok) throw new Error('Failed to fetch district');
+    return res.json();
+  },
+
+  async getWard(code: number): Promise<Ward> {
+    const res = await fetch(`${ADDRESS_API_URL}/address/historical/ward/${code}`);
+    if (!res.ok) throw new Error('Failed to fetch ward');
+    return res.json();
   }
 };

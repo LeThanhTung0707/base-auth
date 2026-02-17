@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { AddressService } from './address.service';
 
 @Controller('address')
@@ -36,5 +36,20 @@ export class AddressController {
   @Get('/historical/wards')
   getHistoricalWards(@Query('districtCode') districtCode: string) {
     return this.addressService.getHistoricalWards(+districtCode);
+  }
+
+  @Get('/historical/province/:code')
+  getHistoricalProvince(@Param('code') code: string) {
+    return this.addressService.getHistoricalProvince(+code);
+  }
+
+  @Get('/historical/district/:code')
+  getHistoricalDistrict(@Param('code') code: string) {
+    return this.addressService.getHistoricalDistrict(+code);
+  }
+
+  @Get('/historical/ward/:code')
+  getHistoricalWard(@Param('code') code: string) {
+    return this.addressService.getHistoricalWard(+code);
   }
 }

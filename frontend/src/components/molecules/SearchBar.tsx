@@ -3,7 +3,26 @@
 import { Search } from "lucide-react";
 
 
-export function SearchBar() {
+interface SearchBarProps {
+  compact?: boolean;
+}
+
+export function SearchBar({ compact = false }: SearchBarProps) {
+  if (compact) {
+    return (
+      <div className="flex items-center border border-gray-200 rounded-full shadow-sm hover:shadow-md transition-all cursor-pointer bg-background py-2 pl-6 pr-2 gap-3 whitespace-nowrap">
+          <div className="text-sm font-semibold">Địa điểm bất kỳ</div>
+          <div className="h-4 w-[1px] bg-gray-300"></div>
+          <div className="text-sm font-semibold">Tuần bất kỳ</div>
+          <div className="h-4 w-[1px] bg-gray-300"></div>
+          <div className="text-sm text-muted-foreground mr-2">Thêm khách</div>
+          <div className="bg-[#FF385C] rounded-full p-2.5 text-white">
+             <Search className="w-4 h-4" strokeWidth={3} />
+          </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex items-center border rounded-full shadow-sm hover:shadow-md transition-shadow cursor-pointer bg-background h-16 w-full max-w-[850px]">
       {/* Location Section */}

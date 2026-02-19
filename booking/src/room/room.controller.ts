@@ -11,6 +11,13 @@ import {
 import { RoomService } from './room.service';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
+import { IsArray, IsString } from 'class-validator';
+
+class UpdateImagesDto {
+  @IsArray()
+  @IsString({ each: true })
+  images: string[];
+}
 
 import { AuthGuard } from '../common/guards/auth.guard';
 import { UseGuards } from '@nestjs/common';
@@ -42,6 +49,12 @@ export class RoomController {
   @UseGuards(AuthGuard)
   update(@Param('id') id: string, @Body() dto: UpdateRoomDto) {
     return this.roomService.update(id, dto);
+  }
+
+  @Patch(':id/images')
+  @UseGuards(AuthGuard)
+  updateImages(@Param('id') id: string, @Body() dto: UpdateImagesDto) {
+    return this.roomService.updateImages(id, dto.images);
   }
 
   @Delete(':id')

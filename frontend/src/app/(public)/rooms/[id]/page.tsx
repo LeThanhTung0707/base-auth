@@ -80,7 +80,8 @@ export default function RoomDetailPage() {
 
       {/* Image Gallery */}
       <div className="py-6">
-        <ImageGallery />
+        <ImageGallery images={room.images} />
+
       </div>
 
       {/* Main Content Grid */}

@@ -7,6 +7,7 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { CreateRoomDto, Room, RoomService } from "@/services/room.service";
 import { RoomForm } from "@/components/organisms/RoomForm";
+import { ImageManagerDialog } from "@/components/organisms/ImageManagerDialog";
 import { toast } from "react-toastify";
 
 export default function EditListingPage() {
@@ -21,30 +22,27 @@ export default function EditListingPage() {
 
   useEffect(() => {
     if (id) {
-        RoomService.getRoomById(id)
-            .then(data => {
-                setRoomData(data);
-                // Check if user is owner
-                if (user && data.ownerId !== user.id && !user.roles?.includes("ADMIN")) {
-                    toast.error("Bạn không có quyền chỉnh sửa căn hộ này.");
-                    router.push("/host/listings");
-                }
-            })
-            .catch(err => {
-                console.error("Failed to fetch room", err);
-                toast.error("Không tìm thấy căn hộ.");
-                router.push("/host/listings");
-            })
-            .finally(() => setFetching(false));
+      RoomService.getRoomById(id)
+        .then(data => {
+          setRoomData(data);
+          if (user && data.ownerId !== user.id && !user.roles?.includes("ADMIN")) {
+            toast.error("Bạn không có quyền chỉnh sửa căn hộ này.");
+            router.push("/host/listings");
+          }
+        })
+        .catch(err => {
+          console.error("Failed to fetch room", err);
+          toast.error("Không tìm thấy căn hộ.");
+          router.push("/host/listings");
+        })
+        .finally(() => setFetching(false));
     }
   }, [id, user, router]);
 
   const handleSubmit = async (data: CreateRoomDto) => {
     setLoading(true);
-
     try {
       if (!user?.id) throw new Error("User ID not found");
-
       await RoomService.updateRoom(id, data);
       toast.success("Cập nhật thành công!");
       router.push("/host/listings");
@@ -57,7 +55,7 @@ export default function EditListingPage() {
   };
 
   if (!user || (!user.roles?.includes("HOST") && !user.roles?.includes("ADMIN"))) {
-      return null;
+    return null;
   }
 
   if (fetching) return <div className="container mx-auto p-8">Đang tải dữ liệu...</div>;
@@ -70,18 +68,27 @@ export default function EditListingPage() {
       </Link>
 
       <div className="space-y-6">
-        <div>
+        <div className="flex items-start justify-between">
+          <div>
             <h1 className="text-3xl font-bold tracking-tight">Chỉnh sửa căn hộ</h1>
             <p className="text-muted-foreground mt-1">Cập nhật thông tin chi tiết về chỗ nghỉ của bạn.</p>
+          </div>
+          {roomData && (
+            <ImageManagerDialog
+              roomId={id}
+              images={roomData.images || []}
+              onImagesChange={(images) => setRoomData(prev => prev ? { ...prev, images } : prev)}
+            />
+          )}
         </div>
 
         {roomData && (
-            <RoomForm 
-                initialData={roomData}
-                onSubmit={async (data) => await handleSubmit(data)} 
-                isLoading={loading} 
-                submitLabel="Lưu thay đổi" 
-            />
+          <RoomForm 
+            initialData={roomData}
+            onSubmit={async (data) => await handleSubmit(data)} 
+            isLoading={loading} 
+            submitLabel="Lưu thay đổi" 
+          />
         )}
       </div>
     </div>

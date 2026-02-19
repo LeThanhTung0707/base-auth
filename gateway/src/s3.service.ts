@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { S3Client, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
 import { v4 as uuidv4 } from 'uuid';
 import { Multer } from 'multer';
@@ -26,23 +26,22 @@ export class S3Service {
     this.logger.log(`Initializing S3 Service with config: ${JSON.stringify({ ...config, credentials: '***' })}`);
     this.s3Client = new S3Client(config);
     
-    // Ensure bucket exists (for local development convenience)
     this.ensureBucketExists();
   }
 
   async ensureBucketExists() {
+    try {
+      const { CreateBucketCommand, HeadBucketCommand } = await import('@aws-sdk/client-s3');
       try {
-        const { CreateBucketCommand, HeadBucketCommand } = await import('@aws-sdk/client-s3');
-        try {
-            await this.s3Client.send(new HeadBucketCommand({ Bucket: this.bucketName }));
-        } catch (error) {
-            this.logger.log(`Bucket ${this.bucketName} not found, creating...`);
-            await this.s3Client.send(new CreateBucketCommand({ Bucket: this.bucketName }));
-            this.logger.log(`Bucket ${this.bucketName} created.`);
-        }
-      } catch (err) {
-          this.logger.error("Failed to ensure bucket exists", err);
+        await this.s3Client.send(new HeadBucketCommand({ Bucket: this.bucketName }));
+      } catch (error) {
+        this.logger.log(`Bucket ${this.bucketName} not found, creating...`);
+        await this.s3Client.send(new CreateBucketCommand({ Bucket: this.bucketName }));
+        this.logger.log(`Bucket ${this.bucketName} created.`);
       }
+    } catch (err) {
+      this.logger.error("Failed to ensure bucket exists", err);
+    }
   }
 
   async uploadFile(file: Multer.File): Promise<string> {
@@ -61,12 +60,25 @@ export class S3Service {
       });
 
       await upload.done();
-      
-      // Return the URL accessible from frontend
-      // Since frontend is on host, and localstack is on `localhost:4566`, this should work
-      return `${process.env.AWS_S3_ENDPOINT}/${this.bucketName}/${key}`;
+      // AWS_S3_ENDPOINT is internal (localstack:4566). 
+      // PUBLIC_S3_ENDPOINT is what browsers can access (localhost:4566).
+      const publicEndpoint = process.env.PUBLIC_S3_ENDPOINT || process.env.AWS_S3_ENDPOINT || 'http://localhost:4566';
+      return `${publicEndpoint}/${this.bucketName}/${key}`;
     } catch (error) {
       this.logger.error("S3 Upload Failed", error);
+      throw error;
+    }
+  }
+
+  async deleteFile(key: string): Promise<void> {
+    try {
+      await this.s3Client.send(new DeleteObjectCommand({
+        Bucket: this.bucketName,
+        Key: key,
+      }));
+      this.logger.log(`Deleted S3 object: ${key}`);
+    } catch (error) {
+      this.logger.error(`S3 Delete Failed for key: ${key}`, error);
       throw error;
     }
   }

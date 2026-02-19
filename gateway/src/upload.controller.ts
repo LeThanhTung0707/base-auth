@@ -1,4 +1,4 @@
-import { Controller, Post, UseInterceptors, UploadedFile, BadRequestException } from '@nestjs/common';
+import { Controller, Post, Delete, Body, UseInterceptors, UploadedFile, BadRequestException } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { S3Service } from './s3.service';
 import { Multer } from 'multer';
@@ -14,9 +14,8 @@ export class UploadController {
       throw new BadRequestException('No file provided');
     }
     
-    // Validate file type (image only)
     if (!file.mimetype.match(/^image\/(jpg|jpeg|png|gif)$/)) {
-        throw new BadRequestException('Only image files are allowed');
+      throw new BadRequestException('Only image files are allowed');
     }
 
     try {
@@ -24,6 +23,29 @@ export class UploadController {
       return { url };
     } catch (error) {
       throw new BadRequestException('File upload failed');
+    }
+  }
+
+  @Delete('image')
+  async deleteImage(@Body('url') url: string) {
+    if (!url) {
+      throw new BadRequestException('No URL provided');
+    }
+
+    try {
+      // Extract key from URL: http://localstack:4566/rooms-bucket/uuid-filename.jpg
+      const urlObj = new URL(url);
+      // pathname = /rooms-bucket/uuid-filename.jpg → key = uuid-filename.jpg
+      const key = urlObj.pathname.split('/').slice(2).join('/');
+      if (!key) {
+        throw new BadRequestException('Could not extract key from URL');
+      }
+
+      await this.s3Service.deleteFile(key);
+      return { success: true };
+    } catch (error) {
+      if (error instanceof BadRequestException) throw error;
+      throw new BadRequestException('File deletion failed');
     }
   }
 }

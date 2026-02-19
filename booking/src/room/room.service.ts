@@ -71,6 +71,10 @@ export class RoomService {
     return this.repo.update(id, dto);
   }
 
+  updateImages(id: string, images: string[]) {
+    return this.repo.updateImages(id, images);
+  }
+
   remove(id: string) {
     return this.repo.delete(id);
   }

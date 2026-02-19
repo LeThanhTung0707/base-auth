@@ -33,6 +33,10 @@ export class RoomRepository {
     return this.prisma.room.update({ where: { id }, data });
   }
 
+  updateImages(id: string, images: string[]) {
+    return this.prisma.room.update({ where: { id }, data: { images } });
+  }
+
   delete(id: string) {
     return this.prisma.room.delete({ where: { id } });
   }

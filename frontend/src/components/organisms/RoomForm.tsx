@@ -38,7 +38,8 @@ export function RoomForm({ initialData, onSubmit, isLoading, submitLabel, onCanc
     category: initialData?.category || "",
     ownerId: initialData?.ownerId || "",
     wardCode: initialData?.wardCode || 0,
-    historicalWardCode: undefined
+    historicalWardCode: undefined,
+    images: initialData?.images || [],
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -97,13 +98,16 @@ export function RoomForm({ initialData, onSubmit, isLoading, submitLabel, onCanc
         required={!initialData} 
       />
 
-      <div className="space-y-2">
-        <label className="text-sm font-medium leading-none">Hình ảnh</label>
-        <ImageUpload 
-            value={formData.images || []}
-            onChange={(images) => setFormData({...formData, images})}
-        />
-      </div>
+      {/* Images: only shown when creating a new room. For editing, use the ImageManagerDialog. */}
+      {!initialData && (
+        <div className="space-y-2">
+          <label className="text-sm font-medium leading-none">Hình ảnh</label>
+          <ImageUpload 
+              value={formData.images || []}
+              onChange={(images) => setFormData({...formData, images})}
+          />
+        </div>
+      )}
 
       <div className="space-y-2">
         <label className="text-sm font-medium leading-none">Mô tả</label>

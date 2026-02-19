@@ -20,7 +20,7 @@ export class RoomRepository {
       where, 
       orderBy: { createdAt: 'desc' },
       include: {
-        bookings: false, // We don't need bookings for listing
+        bookings: false,
       } 
     });
   }

@@ -16,6 +16,7 @@ model Room {
   ownerId             String           // ID người tạo phòng
   wardCode            Int              // Mã phường (địa chỉ mới)
   historicalWardCode  Int?             // Mã phường cũ (nếu có)
+  images              String[]
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 

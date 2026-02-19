@@ -10,9 +10,16 @@ export const REDIS_CLIENT = 'REDIS_CLIENT';
     {
       provide: REDIS_CLIENT,
       useFactory: (configService: ConfigService) => {
-        const host = configService.get<string>('REDIS_HOST', 'localhost');
+        const host = configService.get<string>('REDIS_HOST', 'redis'); // Default to redis instead of localhost
         const port = configService.get<number>('REDIS_PORT', 6379);
         
+        console.log('Redis Config Check:', { 
+            envHost: process.env.REDIS_HOST, 
+            configHost: configService.get('REDIS_HOST'),
+            finalHost: host,
+            finalPort: port
+        });
+
         const client = new Redis({
           host,
           port,

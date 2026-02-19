@@ -1,0 +1,73 @@
+import { Injectable, Logger } from '@nestjs/common';
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { Upload } from '@aws-sdk/lib-storage';
+import { v4 as uuidv4 } from 'uuid';
+import { Multer } from 'multer';
+
+@Injectable()
+export class S3Service {
+  private s3Client: S3Client;
+  private bucketName: string;
+  private readonly logger = new Logger(S3Service.name);
+
+  constructor() {
+    this.bucketName = process.env.AWS_BUCKET_NAME || 'rooms-bucket';
+    
+    const config = {
+      region: process.env.AWS_REGION || 'us-east-1',
+      credentials: {
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID || 'test',
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || 'test',
+      },
+      endpoint: process.env.AWS_S3_ENDPOINT || 'http://localstack:4566',
+      forcePathStyle: true,
+    };
+
+    this.logger.log(`Initializing S3 Service with config: ${JSON.stringify({ ...config, credentials: '***' })}`);
+    this.s3Client = new S3Client(config);
+    
+    // Ensure bucket exists (for local development convenience)
+    this.ensureBucketExists();
+  }
+
+  async ensureBucketExists() {
+      try {
+        const { CreateBucketCommand, HeadBucketCommand } = await import('@aws-sdk/client-s3');
+        try {
+            await this.s3Client.send(new HeadBucketCommand({ Bucket: this.bucketName }));
+        } catch (error) {
+            this.logger.log(`Bucket ${this.bucketName} not found, creating...`);
+            await this.s3Client.send(new CreateBucketCommand({ Bucket: this.bucketName }));
+            this.logger.log(`Bucket ${this.bucketName} created.`);
+        }
+      } catch (err) {
+          this.logger.error("Failed to ensure bucket exists", err);
+      }
+  }
+
+  async uploadFile(file: Multer.File): Promise<string> {
+    const key = `${uuidv4()}-${file.originalname}`;
+    
+    try {
+      const upload = new Upload({
+        client: this.s3Client,
+        params: {
+          Bucket: this.bucketName,
+          Key: key,
+          Body: file.buffer,
+          ContentType: file.mimetype,
+          ACL: 'public-read',
+        },
+      });
+
+      await upload.done();
+      
+      // Return the URL accessible from frontend
+      // Since frontend is on host, and localstack is on `localhost:4566`, this should work
+      return `${process.env.AWS_S3_ENDPOINT}/${this.bucketName}/${key}`;
+    } catch (error) {
+      this.logger.error("S3 Upload Failed", error);
+      throw error;
+    }
+  }
+}

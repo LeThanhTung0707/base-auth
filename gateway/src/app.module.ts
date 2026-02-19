@@ -1,7 +1,13 @@
 import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
 import { createProxyMiddleware } from 'http-proxy-middleware';
+import { S3Service } from './s3.service';
+import { UploadController } from './upload.controller';
 
-@Module({})
+@Module({
+  imports: [],
+  controllers: [UploadController],
+  providers: [S3Service],
+})
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     const backendUrl = process.env.BACKEND_SERVICE_URL || 'http://backend:4000';

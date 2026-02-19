@@ -37,9 +37,7 @@ export function Header() {
         <div className="grid grid-cols-[1fr_auto_1fr] items-center pt-4 relative z-20">
             {/* Logo */}
             <div className="flex justify-start">
-                <Link href="/">
-                    <Logo />
-                </Link>
+                <Logo />
             </div>
             
             {/* Center Area: Tabs (Large) -> Search (Small) */}
@@ -70,29 +68,27 @@ export function Header() {
                 {user ? (
                   <>
                     {user?.roles?.includes('HOST') ? (
-                      <Link href="/host/listings">
-                        <button className="text-sm font-semibold hover:bg-muted px-4 py-2 rounded-full transition-colors whitespace-nowrap">
+                      <Link href="/host/listings" className="text-sm font-semibold hover:bg-muted px-4 py-2 rounded-full transition-colors whitespace-nowrap">
                             Quản lý căn hiện có
-                        </button>
                       </Link>
                     ) : (
-                      <Link href="/host/create-listing">
-                        <Button variant="ghost" className="hidden md:flex rounded-full">
+                      <Button variant="ghost" className="hidden md:flex rounded-full" asChild>
+                         <Link href="/host/create-listing">
                           Trở thành người cho thuê
-                        </Button>
-                      </Link>
+                         </Link>
+                      </Button>
                     )}
                     <NotificationMenu />
                     <UserMenu />
                   </>
                 ) : (
                   <div className="flex items-center gap-2">
-                     <Link href="/login">
-                        <Button variant="ghost" className="font-medium">Đăng nhập</Button>
-                     </Link>
-                     <Link href="/register">
-                        <Button className="font-medium">Đăng ký</Button>
-                     </Link>
+                     <Button variant="ghost" className="font-medium" asChild>
+                        <Link href="/login">Đăng nhập</Link>
+                     </Button>
+                     <Button className="font-medium" asChild>
+                        <Link href="/register">Đăng ký</Link>
+                     </Button>
                   </div>
                 )}
             </div>

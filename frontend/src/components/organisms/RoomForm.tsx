@@ -7,6 +7,7 @@ import { CreateRoomDto, Room } from "@/services/room.service";
 import { AddressSelector } from "@/components/molecules/AddressSelector";
 import Link from "next/link";
 import { toast } from "react-toastify";
+import { ImageUpload } from "@/components/molecules/ImageUpload";
 
 const CATEGORIES = [
   "Bãi biển",
@@ -95,6 +96,14 @@ export function RoomForm({ initialData, onSubmit, isLoading, submitLabel, onCanc
         onAddressChange={(p, d, w) => setFormData({...formData, wardCode: w})}
         required={!initialData} 
       />
+
+      <div className="space-y-2">
+        <label className="text-sm font-medium leading-none">Hình ảnh</label>
+        <ImageUpload 
+            value={formData.images || []}
+            onChange={(images) => setFormData({...formData, images})}
+        />
+      </div>
 
       <div className="space-y-2">
         <label className="text-sm font-medium leading-none">Mô tả</label>

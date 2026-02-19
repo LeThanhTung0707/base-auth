@@ -53,12 +53,12 @@ export function ListingGrid({ category }: ListingGridProps) {
         <ListingCard
             key={room.id}
             id={room.id}
-            images={[`https://picsum.photos/seed/${room.id}/400/400`]} // Placeholder for now
+            images={room.images && room.images.length > 0 ? room.images : [`https://picsum.photos/seed/${room.id}/400/400`]}
             location={room.name}
             distance={room.description?.substring(0, 30) + "..." || "No description"}
             dates="Available now"
             price={room.price}
-            rating={5.0}
+            rating={5.0} // TODO: Implement real rating
             ratingCount={0}
         />
       ))}

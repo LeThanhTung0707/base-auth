@@ -11,6 +11,10 @@ services:
       - /app/node_modules
     environment:
       NODE_ENV: development
+      PORT: 4000
+      DATABASE_URL: postgresql://user:password@postgres:5432/backend_db?schema=public
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
 
   booking:
     build:
@@ -22,6 +26,16 @@ services:
       - /app/node_modules
     environment:
       NODE_ENV: development
+      PORT: 4001
+      DATABASE_URL: postgresql://user:password@postgres:5432/booking_db?schema=public
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      AWS_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      AWS_S3_ENDPOINT: http://localstack:4566
+      AWS_BUCKET_NAME: rooms-bucket
+      AWS_FORCE_PATH_STYLE: "true"
 
   address:
     build:
@@ -33,6 +47,10 @@ services:
       - /app/node_modules
     environment:
       NODE_ENV: development
+      PORT: 4002
+      DATABASE_URL: postgresql://user:password@postgres:5432/address_db?schema=public
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
 
   frontend:
     build:
@@ -53,3 +71,29 @@ services:
       - /app/node_modules
     environment:
       NODE_ENV: development
+      BACKEND_SERVICE_URL: http://backend:4000
+      BOOKING_SERVICE_URL: http://booking:4001
+      ADDRESS_SERVICE_URL: http://address:4002
+      AWS_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      AWS_S3_ENDPOINT: http://localstack:4566
+      AWS_BUCKET_NAME: rooms-bucket
+      AWS_FORCE_PATH_STYLE: "true"
+    ports:
+      - "8080:8080"
+
+  localstack:
+    image: localstack/localstack:latest
+    ports:
+      - "4566:4566"            # LocalStack Gateway
+      - "4510-4559:4510-4559"  # External services port range
+    environment:
+      - SERVICES=s3
+      - DEBUG=1
+      - DATA_DIR=/tmp/localstack/data
+      - DOCKER_HOST=unix:///var/run/docker.sock
+    volumes:
+      - "${LOCALSTACK_VOLUME_DIR:-./localstack_data}:/var/lib/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+

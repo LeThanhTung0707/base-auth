@@ -12,9 +12,22 @@ const nextConfig: NextConfig = {
         hostname: "images.unsplash.com",
       },
       {
+        protocol: "http",
+        hostname: "localstack",
+        port: "4566",
+      },
+      {
+        protocol: "http",
+        hostname: "localhost",
+      },
+      {
+        protocol: "http",
+        hostname: "127.0.0.1",
+      },
+      {
         protocol: "https",
         hostname: "picsum.photos",
-      },
+      }
     ],
   },
 };

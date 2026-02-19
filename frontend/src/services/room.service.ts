@@ -1,4 +1,6 @@
-const BOOKING_API_URL = process.env.NEXT_PUBLIC_BOOKING_API_URL || 'http://localhost:4001';
+const BOOKING_API_URL = typeof window === 'undefined' 
+  ? (process.env.INTERNAL_GATEWAY_URL || 'http://gateway:8080')
+  : (process.env.NEXT_PUBLIC_BOOKING_API_URL || 'http://127.0.0.1:8080');
 
 export interface CreateRoomDto {
   name: string;
@@ -8,6 +10,7 @@ export interface CreateRoomDto {
   ownerId: string;
   wardCode: number;
   historicalWardCode?: number;
+  images?: string[];
 }
 
 export interface Room {
@@ -20,6 +23,7 @@ export interface Room {
   wardCode: number;
   createdAt: string;
   updatedAt: string;
+  images: string[];
 }
 
 export const RoomService = {

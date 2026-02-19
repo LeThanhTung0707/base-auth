@@ -25,4 +25,8 @@ export class CreateRoomDto {
   @IsOptional()
   @IsInt()
   historicalWardCode?: number;
+
+  @IsOptional()
+  @IsString({ each: true })
+  images?: string[];
 }

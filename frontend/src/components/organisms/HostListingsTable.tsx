@@ -28,7 +28,7 @@ export function HostListingsTable({ rooms }: HostListingsTableProps) {
                                 <div className="w-10 h-10 bg-muted rounded overflow-hidden relative">
                                     {/* Placeholder Image */}
                                     <img 
-                                        src={`https://picsum.photos/seed/${room.id}/50/50`} 
+                                        src={room.images && room.images.length > 0 ? room.images[0] : `https://picsum.photos/seed/${room.id}/50/50`} 
                                         alt={room.name}
                                         className="object-cover w-full h-full"
                                     />

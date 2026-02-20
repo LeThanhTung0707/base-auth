@@ -89,7 +89,9 @@ export default function RoomDetailPage() {
         
         {/* Left Column: Details */}
         <div className="md:col-span-2 space-y-8">
-            <HostInfo ownerId={room.ownerId} />
+            <HostInfo owner={room.owner} />
+
+
             
             <div className="py-6 border-b">
                 <h3 className="text-xl font-semibold mb-4">Mô tả</h3>

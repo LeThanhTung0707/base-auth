@@ -17,4 +17,12 @@ export class UsersRepository {
   findById(id: string): Promise<User | null> {
     return this.prisma.user.findUnique({ where: { id } });
   }
+
+  updateProfile(id: string, data: { firstName?: string; lastName?: string }): Promise<User> {
+    return this.prisma.user.update({ where: { id }, data });
+  }
+
+  updateAvatar(id: string, avatar: string): Promise<User> {
+    return this.prisma.user.update({ where: { id }, data: { avatar } });
+  }
 }

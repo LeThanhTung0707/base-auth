@@ -5,6 +5,9 @@ export interface User {
   id: string;
   email: string;
   roles?: string[];
+  firstName?: string;
+  lastName?: string;
+  avatar?: string;
 }
 
 interface AuthState {

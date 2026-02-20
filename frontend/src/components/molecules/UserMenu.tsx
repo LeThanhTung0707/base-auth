@@ -1,6 +1,6 @@
 "use client";
 
-import { Menu, User } from "lucide-react";
+import { Menu } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,47 +17,66 @@ export function UserMenu() {
   const router = useRouter();
 
   const handleLogout = async () => {
-      try {
-        await AuthAPI.logout();
-      } catch (error) {
-          console.error("Logout failed", error);
-      }
-      clearUser();
-      router.push("/");
-      router.refresh();
+    try {
+      await AuthAPI.logout();
+    } catch (error) {
+      console.error("Logout failed", error);
+    }
+    clearUser();
+    router.push("/");
+    router.refresh();
   };
+
+  const initials = [user?.firstName, user?.lastName]
+    .filter(Boolean)
+    .map((s) => s![0].toUpperCase())
+    .join("") || user?.email?.[0].toUpperCase() || "U";
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <div className="flex items-center gap-2 border rounded-full p-1 pl-3 hover:shadow-md transition-shadow cursor-pointer bg-background">
           <Menu className="w-4 h-4" />
-          <div className="bg-gray-500 rounded-full p-1 text-white">
-            <User className="w-5 h-5 fill-current" />
+          {/* Avatar or initials */}
+          <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-500 flex items-center justify-center text-white text-sm font-semibold shrink-0">
+            {user?.avatar ? (
+              <img src={user.avatar} alt="avatar" className="w-full h-full object-cover" />
+            ) : (
+              <span>{initials}</span>
+            )}
           </div>
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[200px]">
         {user ? (
           <>
+            <div className="px-2 py-1.5">
+              <p className="text-sm font-semibold truncate">
+                {user.firstName && user.lastName
+                  ? `${user.firstName} ${user.lastName}`
+                  : user.email}
+              </p>
+              <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+            </div>
+            <DropdownMenuSeparator />
             <DropdownMenuItem className="font-semibold" onClick={() => router.push("/dashboard")}>
               Dashboard
             </DropdownMenuItem>
-             <DropdownMenuItem onClick={() => router.push("/account")}>
-                Account
+            <DropdownMenuItem onClick={() => router.push("/account")}>
+              Tài khoản
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleLogout}>Log out</DropdownMenuItem>
+            <DropdownMenuItem onClick={handleLogout}>Đăng xuất</DropdownMenuItem>
           </>
         ) : (
           <>
             <DropdownMenuItem className="font-semibold" onClick={() => router.push("/login")}>
-              Log in
+              Đăng nhập
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => router.push("/register")}>
-              Sign up
+              Đăng ký
             </DropdownMenuItem>
-             <DropdownMenuSeparator />
+            <DropdownMenuSeparator />
             <DropdownMenuItem>Airbnb your home</DropdownMenuItem>
             <DropdownMenuItem>Help Center</DropdownMenuItem>
           </>

@@ -22,6 +22,13 @@ export interface Room {
   createdAt: string;
   updatedAt: string;
   images: string[];
+  owner?: {
+    id: string;
+    email: string;
+    firstName?: string;
+    lastName?: string;
+    avatar?: string;
+  };
 }
 
 export const RoomService = {

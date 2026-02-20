@@ -10,7 +10,6 @@ export class UsersService {
     private hashing: HashingService,
   ) {}
 
-  // REGISTER
   async register(email: string, password: string): Promise<User> {
     const exists = await this.repo.findByEmail(email);
     if (exists) throw new ConflictException('Email already registered');
@@ -18,7 +17,6 @@ export class UsersService {
     return this.repo.create(email, hash);
   }
 
-  // Verify
   async verify(email: string, password: string): Promise<User | null> {
     const u = await this.repo.findByEmail(email);
     if (!u) return null;
@@ -28,5 +26,13 @@ export class UsersService {
 
   findById(id: string) {
     return this.repo.findById(id);
+  }
+
+  updateProfile(id: string, data: { firstName?: string; lastName?: string }) {
+    return this.repo.updateProfile(id, data);
+  }
+
+  updateAvatar(id: string, avatar: string) {
+    return this.repo.updateAvatar(id, avatar);
   }
 }

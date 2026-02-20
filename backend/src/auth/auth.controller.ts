@@ -1,7 +1,9 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  Param,
   Post,
   Req,
   Res,
@@ -20,9 +22,15 @@ import { CsrfInterceptor } from './csrf.interceptor';
 import * as crypto from 'crypto';
 import { AuthCsrfGuard } from './guards/auth-csrf.guard';
 import { User } from 'src/common/decorators/user.decorator';
+
 class AuthDto {
   email!: string;
   password!: string;
+}
+
+class ChangePasswordDto {
+  currentPassword!: string;
+  newPassword!: string;
 }
 
 @Controller('auth')
@@ -107,5 +115,44 @@ export class AuthController {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...rest } = u;
     return rest;
+  }
+
+  // ─── Security endpoints ────────────────────────────────────────────
+
+  @Post('change-password')
+  @UseGuards(AuthCsrfGuard)
+  async changePassword(
+    @User() user: { sub: string },
+    @Body() dto: ChangePasswordDto,
+  ) {
+    await this.auth.changePassword(user.sub, dto.currentPassword, dto.newPassword);
+    return { ok: true };
+  }
+
+  @Get('sessions')
+  @UseGuards(AuthCsrfGuard)
+  async getSessions(@User() user: { sub: string }) {
+    return this.auth.getSessions(user.sub);
+  }
+
+  @Delete('sessions/:id')
+  @UseGuards(AuthCsrfGuard)
+  async revokeSession(
+    @User() user: { sub: string },
+    @Param('id') sessionId: string,
+  ) {
+    await this.auth.revokeSession(user.sub, sessionId);
+    return { ok: true };
+  }
+
+  @Delete('sessions')
+  @UseGuards(AuthCsrfGuard)
+  async revokeOtherSessions(
+    @User() user: { sub: string },
+    @Req() req: Request,
+  ) {
+    const currentToken = req.cookies?.['refresh_token'];
+    await this.auth.revokeOtherSessions(user.sub, currentToken);
+    return { ok: true };
   }
 }

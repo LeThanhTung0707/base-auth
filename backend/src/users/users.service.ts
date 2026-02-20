@@ -35,4 +35,8 @@ export class UsersService {
   updateAvatar(id: string, avatar: string) {
     return this.repo.updateAvatar(id, avatar);
   }
+
+  updatePassword(id: string, newPassword: string) {
+    return this.repo.updatePassword(id, newPassword);
+  }
 }

@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import { AuthRepository } from './auth.repository';
@@ -114,5 +118,30 @@ export class AuthService {
     } catch (err) {
       throw new UnauthorizedException('Invalid refresh token');
     }
+  }
+
+  /** Change password — verify current password, then update to new hash */
+  async changePassword(userId: string, currentPassword: string, newPassword: string) {
+    const user = await this.users.findById(userId);
+    if (!user) throw new UnauthorizedException();
+    const valid = await this.users.verify(user.email, currentPassword);
+    if (!valid) throw new BadRequestException('Mật khẩu hiện tại không đúng');
+    await this.users.updatePassword(userId, newPassword);
+  }
+
+  /** List active sessions for user */
+  getSessions(userId: string) {
+    return this.repo.getActiveSessions(userId);
+  }
+
+  /** Revoke a specific session (must belong to user) */
+  async revokeSession(userId: string, sessionId: string) {
+    await this.repo.revokeSessionById(userId, sessionId);
+  }
+
+  /** Revoke all OTHER sessions (keep current refresh token) */
+  async revokeOtherSessions(userId: string, currentRefreshToken: string) {
+    const hash = crypto.createHash('sha256').update(currentRefreshToken).digest('hex');
+    await this.repo.revokeOtherSessions(userId, hash);
   }
 }

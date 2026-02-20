@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Grid, ChevronLeft, ImageOff } from "lucide-react";
+import Image from "next/image";
 import {
   Dialog,
   DialogContent,
@@ -29,11 +30,15 @@ export function ImageGallery({ images = [] }: ImageGalleryProps) {
         {/* Large Image */}
         <div className="md:col-span-2 md:row-span-2 relative h-full cursor-pointer overflow-hidden">
           <DialogTrigger asChild>
-            <img
-              src={images[0]}
-              alt="Room main image"
-              className="w-full h-full object-cover hover:opacity-95 transition"
-            />
+            <div className="w-full h-full cursor-pointer">
+              <Image
+                src={images[0]}
+                alt="Room main image"
+                fill
+                className="object-cover hover:opacity-95 transition"
+                priority
+              />
+            </div>
           </DialogTrigger>
         </div>
 
@@ -41,11 +46,14 @@ export function ImageGallery({ images = [] }: ImageGalleryProps) {
         {images.slice(1, 5).map((img, idx) => (
           <div key={idx} className="relative hidden md:block h-full cursor-pointer overflow-hidden">
             <DialogTrigger asChild>
-              <img
-                src={img}
-                alt={`Room image ${idx + 2}`}
-                className="w-full h-full object-cover hover:opacity-95 transition"
-              />
+              <div className="w-full h-full cursor-pointer">
+                <Image
+                  src={img}
+                  alt={`Room image ${idx + 2}`}
+                  fill
+                  className="object-cover hover:opacity-95 transition"
+                />
+              </div>
             </DialogTrigger>
           </div>
         ))}
@@ -75,10 +83,11 @@ export function ImageGallery({ images = [] }: ImageGalleryProps) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {images.map((img, idx) => (
                 <div key={idx} className={`relative overflow-hidden rounded-lg ${idx % 3 === 0 ? 'md:col-span-2 aspect-[16/9]' : 'aspect-[3/2]'}`}>
-                  <img
+                  <Image
                     src={img}
                     alt={`Gallery image ${idx + 1}`}
-                    className="w-full h-full object-cover hover:opacity-95 transition cursor-pointer"
+                    fill
+                    className="object-cover hover:opacity-95 transition cursor-pointer"
                     loading="lazy"
                   />
                 </div>

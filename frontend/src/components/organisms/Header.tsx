@@ -10,14 +10,35 @@ import { useAuthStore } from "@/store/authStore";
 import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import { UserService } from "@/services/user.service";
+import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 export function Header() {
   const { user } = useAuthStore();
   const [isScrolled, setIsScrolled] = useState(false);
+  const queryClient = useQueryClient();
+  const router = useRouter();
+  const [loadingHost, setLoadingHost] = useState(false);
+
+  const handleBecomeHost = async () => {
+    setLoadingHost(true);
+    try {
+      await UserService.becomeHost();
+      queryClient.invalidateQueries({ queryKey: ["auth", "me"] });
+      toast.success("Chúc mừng! Bạn đã trở thành người cho thuê.");
+      router.push("/host/create-listing");
+    } catch {
+      toast.error("Đã xảy ra lỗi khi đăng ký người cho thuê.");
+    } finally {
+      setLoadingHost(false);
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
-        setIsScrolled(window.scrollY > 20); // Small threshold to avoid flicker
+        setIsScrolled(window.scrollY > 20);
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -72,10 +93,13 @@ export function Header() {
                             Quản lý căn hiện có
                       </Link>
                     ) : (
-                      <Button variant="ghost" className="hidden md:flex rounded-full" asChild>
-                         <Link href="/host/create-listing">
-                          Trở thành người cho thuê
-                         </Link>
+                      <Button 
+                        variant="ghost" 
+                        className="hidden md:flex rounded-full" 
+                        onClick={handleBecomeHost}
+                        disabled={loadingHost}
+                      >
+                         {loadingHost ? "Đang xử lý..." : "Trở thành người cho thuê"}
                       </Button>
                     )}
                     <NotificationMenu />

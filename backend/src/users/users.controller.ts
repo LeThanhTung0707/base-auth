@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Patch,
+  Post,
   UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
@@ -52,6 +53,14 @@ export class UsersController {
     @Body() dto: UpdateAvatarDto,
   ) {
     const u = await this.usersService.updateAvatar(user.sub, dto.avatarUrl);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...rest } = u;
+    return rest;
+  }
+
+  @Post('me/become-host')
+  async becomeHost(@User() user: { sub: string }) {
+    const u = await this.usersService.becomeHost(user.sub);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...rest } = u;
     return rest;

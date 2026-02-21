@@ -17,6 +17,11 @@ export const UserService = {
     return res.data;
   },
 
+  async becomeHost(): Promise<User> {
+    const res = await api.post<User>('/users/me/become-host');
+    return res.data;
+  },
+
   async changePassword(currentPassword: string, newPassword: string): Promise<void> {
     await api.post('/auth/change-password', { currentPassword, newPassword });
   },

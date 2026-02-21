@@ -39,4 +39,8 @@ export class UsersService {
   updatePassword(id: string, newPassword: string) {
     return this.repo.updatePassword(id, newPassword);
   }
+
+  becomeHost(id: string) {
+    return this.repo.becomeHost(id);
+  }
 }

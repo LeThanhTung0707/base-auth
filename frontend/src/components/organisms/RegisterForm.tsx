@@ -7,14 +7,18 @@ import { FormButton } from "../atoms/FormButton";
 import { AuthFooterLinks } from "../molecules/AuthFooterLinks";
 import { AuthAPI } from "@/lib/auth";
 
+import { useQueryClient } from "@tanstack/react-query";
+
 export const RegisterForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     await AuthAPI.register(email, password);
+    queryClient.invalidateQueries({ queryKey: ["auth", "me"] });
     router.push("/");
   };
 

@@ -12,7 +12,7 @@ export class UsersRepository {
   }
 
   create(email: string, passwordHash: string): Promise<User> {
-    return this.prisma.user.create({ data: { email, password: passwordHash } });
+    return this.prisma.user.create({ data: { email, password: passwordHash, roles: ['USER'] } });
   }
 
   findById(id: string): Promise<User | null> {
@@ -30,5 +30,16 @@ export class UsersRepository {
   async updatePassword(id: string, newPassword: string): Promise<void> {
     const hash = await this.hashing.hash(newPassword);
     await this.prisma.user.update({ where: { id }, data: { password: hash } });
+  }
+
+  async becomeHost(id: string): Promise<User> {
+    const user = await this.findById(id);
+    if (!user) throw new Error('User not found');
+    const roles = new Set(user.roles || []);
+    roles.add('HOST');
+    return this.prisma.user.update({
+      where: { id },
+      data: { roles: Array.from(roles) },
+    });
   }
 }

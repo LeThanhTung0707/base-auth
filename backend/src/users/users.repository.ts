@@ -19,6 +19,10 @@ export class UsersRepository {
     return this.prisma.user.findUnique({ where: { id } });
   }
 
+  findByIds(ids: string[]): Promise<User[]> {
+    return this.prisma.user.findMany({ where: { id: { in: ids } } });
+  }
+
   updateProfile(id: string, data: { firstName?: string; lastName?: string }): Promise<User> {
     return this.prisma.user.update({ where: { id }, data });
   }

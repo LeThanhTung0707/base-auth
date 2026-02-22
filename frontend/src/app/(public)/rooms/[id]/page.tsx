@@ -77,6 +77,8 @@ export default function RoomDetailPage() {
         name={room.name} 
         address={address} 
         category={room.category}
+        rating={room.averageRating}
+        reviewCount={room.reviewCount}
       />
 
       {/* Image Gallery */}
@@ -110,9 +112,13 @@ export default function RoomDetailPage() {
             />
         </div>
 
-        {/* Right Column: Booking Widget (Sticky) */}
         <div className="relative">
-             <BookingWidget price={room.price} roomId={room.id} />
+             <BookingWidget 
+               price={room.price} 
+               roomId={room.id}
+               averageRating={room.averageRating}
+               reviewCount={room.reviewCount}
+             />
         </div>
 
       </div>

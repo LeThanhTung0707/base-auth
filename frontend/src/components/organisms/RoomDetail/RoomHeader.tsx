@@ -21,7 +21,7 @@ interface RoomHeaderProps {
   reviewCount?: number;
 }
 
-export function RoomHeader({ name, category, address, rating = 4.88, reviewCount = 124 }: RoomHeaderProps) {
+export function RoomHeader({ name, category, address, rating = 0, reviewCount = 0 }: RoomHeaderProps) {
   return (
     <div className="py-6 border-b">
       <h1 className="text-2xl md:text-3xl font-semibold mb-2">{name}</h1>
@@ -29,7 +29,13 @@ export function RoomHeader({ name, category, address, rating = 4.88, reviewCount
       <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
         <span className="flex items-center gap-1 font-medium text-black">
           <Star className="w-4 h-4 fill-black" />
-          {rating} · <span className="underline cursor-pointer">{reviewCount} đánh giá</span>
+          {reviewCount > 0 ? (
+            <>
+              {rating.toFixed(2)} · <span className="underline cursor-pointer">{reviewCount} đánh giá</span>
+            </>
+          ) : (
+            <span className="text-muted-foreground">Chưa có đánh giá</span>
+          )}
         </span>
         
         <span className="hidden md:inline">·</span>

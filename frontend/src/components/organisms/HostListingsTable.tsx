@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Edit, Trash } from "lucide-react";
+import { Edit, Trash, CalendarCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Room } from "@/services/room.service";
 
@@ -45,7 +45,12 @@ export function HostListingsTable({ rooms }: HostListingsTableProps) {
                         </td>
                         <td className="py-3 px-4 text-right">
                             <div className="flex justify-end gap-2">
-                                <Button asChild variant="ghost" size="icon" className="h-8 w-8">
+                                <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-blue-600 hover:text-blue-700 hover:bg-blue-50" title="Xem đặt phòng">
+                                    <Link href={`/host/listings/${room.id}/bookings`}>
+                                        <CalendarCheck className="w-4 h-4" />
+                                    </Link>
+                                </Button>
+                                <Button asChild variant="ghost" size="icon" className="h-8 w-8" title="Chỉnh sửa">
                                     <Link href={`/host/listings/${room.id}/edit`}>
                                         <Edit className="w-4 h-4" />
                                     </Link>

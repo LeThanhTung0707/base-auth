@@ -11,11 +11,23 @@ export interface Booking {
   status: 'PENDING' | 'CONFIRMED' | 'CANCELED' | 'COMPLETED';
   createdAt: string;
   room?: Room;
+  user?: {
+    id: string;
+    email: string;
+    firstName?: string;
+    lastName?: string;
+    avatar?: string;
+  };
 }
 
 export const BookingService = {
   async getMyBookings(): Promise<Booking[]> {
     const res = await api.get<Booking[]>('/bookings'); 
+    return res.data;
+  },
+
+  async getRoomBookings(roomId: string): Promise<Booking[]> {
+    const res = await api.get<Booking[]>(`/bookings/room/${roomId}`);
     return res.data;
   },
 

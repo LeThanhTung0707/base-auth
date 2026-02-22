@@ -17,9 +17,11 @@ import { BookingService } from "@/services/booking.service";
 interface BookingWidgetProps {
   price: number;
   roomId: string;
+  averageRating?: number;
+  reviewCount?: number;
 }
 
-export function BookingWidget({ price, roomId }: BookingWidgetProps) {
+export function BookingWidget({ price, roomId, averageRating = 0, reviewCount = 0 }: BookingWidgetProps) {
   const [date, setDate] = useState<DateRange | undefined>();
   const [loading, setLoading] = useState(false);
   const { isAuthenticated } = useAuthStore();
@@ -72,8 +74,15 @@ export function BookingWidget({ price, roomId }: BookingWidgetProps) {
                 <span className="text-2xl font-bold">{formatCurrency(price)}</span>
                 <span className="text-muted-foreground">/ đêm</span>
             </div>
-            <div className="text-sm underline font-medium cursor-pointer">
-                124 đánh giá
+            <div className="text-sm font-medium">
+                {reviewCount > 0 ? (
+                  <span className="flex items-center gap-1 cursor-pointer">
+                    <span className="font-semibold">{averageRating.toFixed(2)}</span>
+                    <span className="text-muted-foreground underline">({reviewCount} đánh giá)</span>
+                  </span>
+                ) : (
+                  <span className="text-muted-foreground">Chưa có đánh giá</span>
+                )}
             </div>
         </div>
       </CardHeader>

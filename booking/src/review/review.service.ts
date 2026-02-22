@@ -1,15 +1,30 @@
-import { Injectable, BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
+import { Injectable, BadRequestException, ForbiddenException, NotFoundException, Inject } from '@nestjs/common';
 import { ReviewRepository } from './review.repository';
 import { RoomRepository } from '../room/room.repository';
 import { PrismaService } from '../prisma/prisma.service';
+import { ClientGrpc } from '@nestjs/microservices';
+import { firstValueFrom, Observable } from 'rxjs';
+
+interface UserServiceGrpc {
+  getUsers(data: { ids: string[] }): Observable<{
+    users: Array<{ id: string; email: string; firstName: string; lastName: string; avatar: string }>;
+  }>;
+}
 
 @Injectable()
 export class ReviewService {
+  private userService: UserServiceGrpc;
+
   constructor(
     private reviewRepo: ReviewRepository,
     private roomRepo: RoomRepository,
     private prisma: PrismaService,
+    @Inject('USER_SERVICE') private userClient: ClientGrpc,
   ) {}
+
+  onModuleInit() {
+    this.userService = this.userClient.getService<UserServiceGrpc>('UserService');
+  }
 
   async createReview(
     roomId: string,
@@ -49,7 +64,36 @@ export class ReviewService {
 
   async getRoomReviews(roomId: string, page: number = 1, limit: number = 10) {
     const skip = (page - 1) * limit;
-    return this.reviewRepo.findByRoomId(roomId, limit, skip);
+    const { reviews, total } = await this.reviewRepo.findByRoomId(roomId, limit, skip);
+
+    if (reviews.length === 0) {
+      return { reviews: [], total };
+    }
+
+    const userIds = [...new Set(reviews.map((r) => r.userId))];
+    let usersMap: Record<string, any> = {};
+
+    try {
+      const { users } = await firstValueFrom(
+        this.userService.getUsers({ ids: userIds })
+      );
+      usersMap = users.reduce((acc, user) => {
+        acc[user.id] = user;
+        return acc;
+      }, {} as Record<string, any>);
+    } catch (error) {
+      console.error('Failed to fetch users for reviews via gRPC:', error);
+    }
+
+    const enrichedReviews = reviews.map((review) => {
+      const user = usersMap[review.userId];
+      return {
+        ...review,
+        user: user || null,
+      };
+    });
+
+    return { reviews: enrichedReviews, total };
   }
 
   async deleteReview(id: string, userId: string, isAdmin: boolean = false) {

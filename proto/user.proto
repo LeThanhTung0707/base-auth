@@ -4,10 +4,15 @@ package user;
 
 service UserService {
   rpc GetUser (GetUserRequest) returns (UserResponse);
+  rpc GetUsers (GetUsersRequest) returns (UsersResponse);
 }
 
 message GetUserRequest {
   string id = 1;
+}
+
+message GetUsersRequest {
+  repeated string ids = 1;
 }
 
 message UserResponse {
@@ -16,4 +21,8 @@ message UserResponse {
   string firstName = 3;
   string lastName = 4;
   string avatar = 5;
+}
+
+message UsersResponse {
+  repeated UserResponse users = 1;
 }

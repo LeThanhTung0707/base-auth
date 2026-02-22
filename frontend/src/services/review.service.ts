@@ -9,6 +9,13 @@ export interface Review {
   comment?: string;
   createdAt: string;
   updatedAt: string;
+  user?: {
+    id: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    avatar: string;
+  };
 }
 
 export interface ReviewPagination {

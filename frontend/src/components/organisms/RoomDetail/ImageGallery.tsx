@@ -30,11 +30,12 @@ export function ImageGallery({ images = [] }: ImageGalleryProps) {
         {/* Large Image */}
         <div className="md:col-span-2 md:row-span-2 relative h-full cursor-pointer overflow-hidden">
           <DialogTrigger asChild>
-            <div className="w-full h-full cursor-pointer">
+            <div className="w-full h-full cursor-pointer relative">
               <Image
                 src={images[0]}
                 alt="Room main image"
                 fill
+                sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-cover hover:opacity-95 transition"
                 priority
               />
@@ -46,11 +47,12 @@ export function ImageGallery({ images = [] }: ImageGalleryProps) {
         {images.slice(1, 5).map((img, idx) => (
           <div key={idx} className="relative hidden md:block h-full cursor-pointer overflow-hidden">
             <DialogTrigger asChild>
-              <div className="w-full h-full cursor-pointer">
+              <div className="w-full h-full cursor-pointer relative">
                 <Image
                   src={img}
                   alt={`Room image ${idx + 2}`}
                   fill
+                  sizes="(max-width: 768px) 100vw, 25vw"
                   className="object-cover hover:opacity-95 transition"
                 />
               </div>
@@ -87,6 +89,7 @@ export function ImageGallery({ images = [] }: ImageGalleryProps) {
                     src={img}
                     alt={`Gallery image ${idx + 1}`}
                     fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
                     className="object-cover hover:opacity-95 transition cursor-pointer"
                     loading="lazy"
                   />

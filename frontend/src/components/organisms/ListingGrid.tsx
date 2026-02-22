@@ -58,8 +58,8 @@ export function ListingGrid({ category }: ListingGridProps) {
             distance={room.description?.substring(0, 30) + "..." || "No description"}
             dates="Available now"
             price={room.price}
-            rating={5.0} // TODO: Implement real rating
-            ratingCount={0}
+            rating={room.averageRating || 0}
+            ratingCount={room.reviewCount || 0}
         />
       ))}
     </div>

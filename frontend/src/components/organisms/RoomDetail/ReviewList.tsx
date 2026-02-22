@@ -54,11 +54,15 @@ export function ReviewList({ roomId, averageRating, reviewCount }: ReviewListPro
             <div key={r.id} className="space-y-4">
               <div className="flex items-center gap-4">
                 <Avatar className="w-12 h-12">
-                  <AvatarImage src={`https://api.dicebear.com/7.x/initials/svg?seed=${r.userId}`} />
+                  <AvatarImage src={r.user?.avatar || "/default-avatar.png"} />
                   <AvatarFallback><UserIcon className="w-6 h-6" /></AvatarFallback>
                 </Avatar>
                 <div>
-                  <h4 className="font-semibold text-base">Khách hàng ẩn danh</h4>
+                  <h4 className="font-semibold text-base">
+                    {r.user?.firstName || r.user?.lastName 
+                      ? `${r.user.firstName} ${r.user.lastName}`.trim() 
+                      : "Khách hàng ẩn danh"}
+                  </h4>
                   <p className="text-sm text-muted-foreground">
                     {format(new Date(r.createdAt), "MMMM yyyy", { locale: vi })}
                   </p>

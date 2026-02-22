@@ -3,9 +3,10 @@ import { BookingService } from './booking.service';
 import { BookingController } from './booking.controller';
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { BookingRepository } from './booking.repository';
+import { UserGrpcClientModule } from 'src/grpc/user-grpc-client.module';
 
 @Module({
-  imports: [PrismaModule],
+  imports: [PrismaModule, UserGrpcClientModule],
   controllers: [BookingController],
   providers: [BookingService, BookingRepository],
 })

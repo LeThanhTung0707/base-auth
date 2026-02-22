@@ -39,10 +39,10 @@ export function UserMenu() {
           <Menu className="w-4 h-4" />
           {/* Avatar or initials */}
           <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-500 flex items-center justify-center text-white text-sm font-semibold shrink-0">
-            {user?.avatar ? (
-              <img src={user.avatar} alt="avatar" className="w-full h-full object-cover" />
+            {user ? (
+               <img src={user.avatar || "/default-avatar.png"} alt="avatar" className="w-full h-full object-cover" />
             ) : (
-              <span>{initials}</span>
+               <span>{initials}</span>
             )}
           </div>
         </div>

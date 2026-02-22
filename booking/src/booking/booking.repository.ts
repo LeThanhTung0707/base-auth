@@ -33,6 +33,22 @@ export class BookingRepository {
     });
   }
 
+  findByRoomIdAndOwner(roomId: string, ownerId: string) {
+    return this.prisma.booking.findMany({
+      where: {
+        roomId,
+        room: {
+          ownerId,
+        }
+      },
+      orderBy: { createdAt: 'desc' },
+      include: {
+        room: true,
+        review: true,
+      },
+    });
+  }
+
   findById(id: string) {
     return this.prisma.booking.findUnique({
       where: { id },

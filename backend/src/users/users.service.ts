@@ -28,6 +28,10 @@ export class UsersService {
     return this.repo.findById(id);
   }
 
+  findByIds(ids: string[]) {
+    return this.repo.findByIds(ids);
+  }
+
   updateProfile(id: string, data: { firstName?: string; lastName?: string }) {
     return this.repo.updateProfile(id, data);
   }

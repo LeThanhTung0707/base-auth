@@ -31,6 +31,15 @@ export class BookingController {
     return this.bookingService.findAll(user.sub);
   }
 
+  @Get('room/:roomId')
+  @UseGuards(AuthGuard)
+  findByRoomForHost(
+    @Param('roomId') roomId: string,
+    @User() user: { sub: string },
+  ) {
+    return this.bookingService.findByRoomForHost(roomId, user.sub);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.bookingService.findOne(id);

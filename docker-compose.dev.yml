@@ -3,6 +3,8 @@ version: '3.8'
 services:
   backend:
     build:
+      context: .
+      dockerfile: backend/Dockerfile
       target: dev
     command: sh -c "npx prisma migrate deploy && npm run start:dev"
     volumes:

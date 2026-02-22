@@ -1,13 +1,13 @@
-# ThanhTungAllInOne - Fullstack Room Booking Platform
+# ThanhTungAllInOne - Enterprise Multiservice Platform
 
-A comprehensive, scalable microservices-based room booking and property management platform. Built with modern enterprise-grade technologies for maximum performance, security, and developer experience.
+A comprehensive, highly scalable microservices-based super-app platform. Built with modern enterprise-grade technologies to power multiple interconnected domains including **Room Booking**, **Food Delivery**, **Car Rentals**, and centralized **Single Sign-On (SSO)**.
 
 ## 🚀 Tech Stack
 
 - **Frontend:** Next.js 15 (App Router), React Query, TailwindCSS, Zustand, Shadcn UI
 - **Backend Architecture:** API Gateway + Microservices (NestJS)
-- **Services:** Auth/Users, Booking, Address/Location
-- **Communication:** gRPC for internal microservice communication
+- **Services Core:** Centralized Auth/SSO (User identities), Booking (Rooms, Cars, Food Orders), Address/Location routing
+- **Communication:** High-performance gRPC for synchronous internal microservice communication
 - **Database ORM:** PostgreSQL + Prisma
 - **Caching & Sessions:** Redis
 - **Storage:** LocalStack (S3) for local AWS compatible object storage
@@ -15,10 +15,10 @@ A comprehensive, scalable microservices-based room booking and property manageme
 
 ## ✨ Key Features
 
-- **Authentication:** JWT-based auth (Access/Refresh tokens) with secure HTTP-only cookies and robust session management.
-- **Microservices:** Clean separation of concerns with dedicated Address, Booking, and User microservices.
-- **Roles:** Support for Guests (seeking rooms), Hosts (managing listings), and Admins (dashboard).
-- **Booking Engine:** Stateful real-time date picking, booking status lifecycle (Pending, Completed, Cancelled).
+- **SSO Authentication:** Centralized JWT-based auth (Access/Refresh tokens) with secure HTTP-only cookies designed to authenticate across multiple sub-domains (Food, Car, Rooms).
+- **Multiservice Architecture:** Clean separation of business logic with extensible microservices (Auth, Booking, Address) primed for scaling into new verticals.
+- **Unified Roles:** Support for varied actors including Guests/Customers, Hosts/Vendors, and Super Admins.
+- **Universal Booking Engine:** Stateful booking lifecycle (Pending, Completed, Cancelled) extensible to flights, rooms, cars, or food orders.
 - **Payment Simulation:** Fake MoMo payment integration flow for checkouts.
 - **Reviews:** Dynamic user rating and comment system for completed stays.
 - **Optimized UI:** Next.js Server Components mixed with Client-side caching via React Query for instant tab switching (SPA).

@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState } from "react";
 import { toast } from "react-toastify";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { UserService, Session } from "@/services/user.service";
+import { UserService } from "@/services/user.service";
 import { Loader2, Monitor, Smartphone, Tablet, Trash2, LogOut } from "lucide-react";
+import { useSessions, useRevokeSession, useRevokeOtherSessions } from "@/hooks/useSessions";
 
 // ── Helpers ──────────────────────────────────────────────
 
@@ -118,49 +119,12 @@ function ChangePasswordCard() {
 // ── Sessions Card ─────────────────────────────────────────
 
 function SessionsCard() {
-  const [sessions, setSessions] = useState<Session[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [revokingId, setRevokingId] = useState<string | null>(null);
-  const [revokingAll, setRevokingAll] = useState(false);
+  const { data: sessions = [], isLoading: loading } = useSessions();
+  const revokeMutation = useRevokeSession();
+  const revokeAllMutation = useRevokeOtherSessions();
 
-  const fetchSessions = useCallback(async () => {
-    try {
-      const data = await UserService.getSessions();
-      setSessions(data);
-    } catch {
-      toast.error("Không thể tải danh sách phiên đăng nhập");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => { fetchSessions(); }, [fetchSessions]);
-
-  const handleRevoke = async (id: string) => {
-    setRevokingId(id);
-    try {
-      await UserService.revokeSession(id);
-      setSessions(prev => prev.filter(s => s.id !== id));
-      toast.success("Đã đăng xuất phiên này");
-    } catch {
-      toast.error("Không thể đăng xuất phiên này");
-    } finally {
-      setRevokingId(null);
-    }
-  };
-
-  const handleRevokeAll = async () => {
-    setRevokingAll(true);
-    try {
-      await UserService.revokeOtherSessions();
-      await fetchSessions(); // refresh list
-      toast.success("Đã đăng xuất tất cả thiết bị khác");
-    } catch {
-      toast.error("Không thể đăng xuất tất cả");
-    } finally {
-      setRevokingAll(false);
-    }
-  };
+  const handleRevoke = (id: string) => revokeMutation.mutate(id);
+  const handleRevokeAll = () => revokeAllMutation.mutate();
 
   return (
     <Card>
@@ -177,9 +141,9 @@ function SessionsCard() {
             size="sm"
             className="text-destructive border-destructive hover:bg-destructive/10"
             onClick={handleRevokeAll}
-            disabled={revokingAll}
+            disabled={revokeAllMutation.isPending}
           >
-            {revokingAll ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <LogOut className="w-3 h-3 mr-1" />}
+            {revokeAllMutation.isPending ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <LogOut className="w-3 h-3 mr-1" />}
             Đăng xuất thiết bị khác
           </Button>
         )}
@@ -219,9 +183,9 @@ function SessionsCard() {
                       size="icon"
                       className="shrink-0 text-muted-foreground hover:text-destructive"
                       onClick={() => handleRevoke(session.id)}
-                      disabled={revokingId === session.id}
+                      disabled={revokeMutation.isPending && revokeMutation.variables === session.id}
                     >
-                      {revokingId === session.id
+                      {revokeMutation.isPending && revokeMutation.variables === session.id
                         ? <Loader2 className="w-4 h-4 animate-spin" />
                         : <Trash2 className="w-4 h-4" />}
                     </Button>

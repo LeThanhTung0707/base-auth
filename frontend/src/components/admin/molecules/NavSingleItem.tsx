@@ -1,5 +1,6 @@
 import { SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 import { type NavItem } from "@/config/menu-data";
+import Link from "next/link";
 
 export function NavSingleItem({ item }: { item: NavItem }) {
   const Icon = item.icon;
@@ -14,10 +15,10 @@ export function NavSingleItem({ item }: { item: NavItem }) {
             : "text-gray-700 hover:bg-emerald-100 hover:text-emerald-800 font-medium rounded-md justify-start w-full px-4 py-2 transition-colors duration-200"
         }
       >
-        <a href={item.url}>
+        <Link href={item.url}>
           {Icon && <Icon className="size-4" />}
           <span>{item.title}</span>
-        </a>
+        </Link>
       </SidebarMenuButton>
     </SidebarMenuItem>
   );

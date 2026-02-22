@@ -12,6 +12,7 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 import { type NavItem } from "@/config/menu-data";
+import Link from "next/link";
 
 export function NavCollapsibleItem({ item }: { item: NavItem }) {
   const Icon = item.icon;
@@ -46,9 +47,9 @@ export function NavCollapsibleItem({ item }: { item: NavItem }) {
             {item.items?.map((subItem) => (
               <SidebarMenuSubItem key={subItem.title}>
                 <SidebarMenuSubButton asChild>
-                  <a href={subItem.url}>
+                  <Link href={subItem.url}>
                     <span>{subItem.title}</span>
-                  </a>
+                  </Link>
                 </SidebarMenuSubButton>
               </SidebarMenuSubItem>
             ))}

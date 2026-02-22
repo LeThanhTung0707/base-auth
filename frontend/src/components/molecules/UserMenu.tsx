@@ -80,7 +80,7 @@ export function UserMenu() {
               Đăng ký
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Airbnb your home</DropdownMenuItem>
+            <DropdownMenuItem>ThanhTungAllInOne your home</DropdownMenuItem>
             <DropdownMenuItem>Help Center</DropdownMenuItem>
           </>
         )}

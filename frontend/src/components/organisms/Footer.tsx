@@ -18,7 +18,7 @@ export function Footer() {
             <div className="space-y-4">
                 <h4 className="font-semibold">Hosting</h4>
                 <ul className="space-y-2 text-sm text-muted-foreground">
-                    <li><Link href="#">Airbnb your home</Link></li>
+                    <li><Link href="#">ThanhTungAllInOne your home</Link></li>
                     <li><Link href="#">AirCover for Hosts</Link></li>
                     <li><Link href="#">Hosting resources</Link></li>
                     <li><Link href="#">Community forum</Link></li>
@@ -26,7 +26,7 @@ export function Footer() {
                 </ul>
             </div>
             <div className="space-y-4">
-                <h4 className="font-semibold">Airbnb</h4>
+                <h4 className="font-semibold">ThanhTungAllInOne</h4>
                 <ul className="space-y-2 text-sm text-muted-foreground">
                     <li><Link href="#">Newsroom</Link></li>
                     <li><Link href="#">New features</Link></li>
@@ -37,7 +37,7 @@ export function Footer() {
             </div>
         </div>
         <div className="border-t mt-8 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-muted-foreground">
-            <p>&copy; 2024 AirbnbClone, Inc.</p>
+            <p>&copy; 2024 ThanhTungAllInOneClone, Inc.</p>
              <div className="flex gap-4 mt-4 md:mt-0">
                 <Link href="#">Privacy</Link>
                 <Link href="#">Terms</Link>

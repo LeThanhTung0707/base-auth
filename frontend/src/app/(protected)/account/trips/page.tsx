@@ -1,8 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Booking, BookingService } from "@/services/booking.service";
-import { ReviewService } from "@/services/review.service";
+import { useMyBookings, useSubmitReview } from "@/hooks/useBookings";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import Image from "next/image";
@@ -12,46 +10,31 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Star } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "react-toastify";
+import { useState } from "react";
+import { Booking } from "@/services/booking.service";
 
 export default function TripsPage() {
-  const [bookings, setBookings] = useState<Booking[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: bookings = [], isLoading: loading } = useMyBookings();
+  const submitReviewMutation = useSubmitReview();
   
   // Review Modal State
   const [reviewBooking, setReviewBooking] = useState<Booking | null>(null);
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");
-  const [submitting, setSubmitting] = useState(false);
 
-  useEffect(() => {
-    fetchBookings();
-  }, []);
-
-  const fetchBookings = async () => {
-    try {
-      const data = await BookingService.getMyBookings();
-      setBookings(data);
-    } catch (error) {
-      console.error("Failed to fetch bookings", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const submitReview = async () => {
+  const submitReview = () => {
     if (!reviewBooking) return;
-    setSubmitting(true);
-    try {
-      await ReviewService.createReview(reviewBooking.roomId, reviewBooking.id, rating, comment);
-      toast.success("Đánh giá của bạn đã được gửi!");
-      setReviewBooking(null);
-      fetchBookings(); // Refresh to hide the review button
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || "Lỗi khi gửi đánh giá");
-    } finally {
-      setSubmitting(false);
-    }
+    submitReviewMutation.mutate({
+      roomId: reviewBooking.roomId,
+      bookingId: reviewBooking.id,
+      rating,
+      comment
+    }, {
+      onSuccess: () => setReviewBooking(null)
+    });
   };
+
+
 
   if (loading) {
     return <div className="flex justify-center p-10"><Spinner /></div>;
@@ -152,8 +135,8 @@ export default function TripsPage() {
               />
             </div>
             
-            <Button onClick={submitReview} disabled={submitting}>
-              {submitting ? "Đang gửi..." : "Gửi đánh giá"}
+            <Button onClick={submitReview} disabled={submitReviewMutation.isPending}>
+              {submitReviewMutation.isPending ? "Đang gửi..." : "Gửi đánh giá"}
             </Button>
           </div>
         </DialogContent>

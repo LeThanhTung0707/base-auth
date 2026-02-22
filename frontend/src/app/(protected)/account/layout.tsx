@@ -32,7 +32,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
                   ? pathname === "/account"
                   : pathname.startsWith(href);
               return (
-                <a
+                <Link
                   key={label}
                   href={href}
                   className={cn(
@@ -43,7 +43,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
                   )}
                 >
                   {label}
-                </a>
+                </Link>
               );
             })}
           </nav>

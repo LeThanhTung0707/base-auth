@@ -43,6 +43,8 @@ services:
 
   address:
     build:
+      context: .
+      dockerfile: address/Dockerfile
       target: dev
     command: sh -c "npx prisma migrate deploy && npm run start:dev"
     volumes:
@@ -74,6 +76,8 @@ services:
 
   gateway:
     build:
+      context: .
+      dockerfile: gateway/Dockerfile
       target: dev
     command: npm run start:dev
     volumes:

@@ -1,6 +1,6 @@
 const ADDRESS_API_URL = typeof window === 'undefined'
-  ? (process.env.INTERNAL_GATEWAY_URL || 'http://gateway:8080')
-  : (process.env.NEXT_PUBLIC_ADDRESS_API_URL || 'http://127.0.0.1:8080');
+  ? (process.env.INTERNAL_ADDRESS_URL || 'http://address:4002')
+  : (process.env.NEXT_PUBLIC_ADDRESS_API_URL || 'http://localhost:8080');
 
 export interface Province {
   code: number;

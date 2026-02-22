@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 
 const navItems = [
   { label: "Profile", href: "/account" },
+  { label: "Chuyến đi", href: "/account/trips" },
   { label: "Security", href: "/account/security" },
   { label: "Payments", href: "/account/payments" },
   { label: "Notifications", href: "/account/notifications" },

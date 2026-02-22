@@ -1,11 +1,10 @@
-import { IsUUID, IsDateString, IsInt, Min } from 'class-validator';
+import { IsUUID, IsDateString, IsNumber, Min } from 'class-validator';
 
 export class CreateBookingDto {
   @IsUUID()
   roomId: string;
 
-  @IsUUID()
-  userId: string;
+  userId?: string;
 
   @IsDateString()
   fromDate: string;
@@ -13,7 +12,7 @@ export class CreateBookingDto {
   @IsDateString()
   toDate: string;
 
-  @IsInt()
+  @IsNumber()
   @Min(0)
   totalPrice: number;
 }

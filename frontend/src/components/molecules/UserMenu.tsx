@@ -62,6 +62,9 @@ export function UserMenu() {
             <DropdownMenuItem className="font-semibold" onClick={() => router.push("/dashboard")}>
               Dashboard
             </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => router.push("/account/trips")}>
+              Chuyến đi
+            </DropdownMenuItem>
             <DropdownMenuItem onClick={() => router.push("/account")}>
               Tài khoản
             </DropdownMenuItem>

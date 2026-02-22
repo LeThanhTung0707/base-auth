@@ -39,7 +39,7 @@ export class AppModule implements NestModule {
           onProxyRes: removeCorsHeaders,
         }),
       )
-      .forRoutes('/rooms', '/bookings');
+      .forRoutes('/rooms', '/bookings', '/reviews');
 
     consumer
       .apply(

@@ -2,7 +2,7 @@ import { api } from '@/lib/api';
 
 const UPLOAD_API_URL = typeof window === 'undefined'
   ? (process.env.INTERNAL_GATEWAY_URL || 'http://gateway:8080')
-  : (process.env.NEXT_PUBLIC_GATEWAY_URL || 'http://127.0.0.1:8080');
+  : (process.env.NEXT_PUBLIC_GATEWAY_URL || 'http://localhost:8080');
 
 export const UploadService = {
   async uploadImage(file: File): Promise<string> {

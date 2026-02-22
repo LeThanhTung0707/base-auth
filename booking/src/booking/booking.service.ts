@@ -11,8 +11,8 @@ export class BookingService {
     return this.repo.create(dto);
   }
 
-  findAll() {
-    return this.repo.findAll();
+  findAll(userId?: string) {
+    return this.repo.findAll(userId);
   }
 
   async findOne(id: string) {

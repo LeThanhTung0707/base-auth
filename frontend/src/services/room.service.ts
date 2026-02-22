@@ -22,6 +22,8 @@ export interface Room {
   createdAt: string;
   updatedAt: string;
   images: string[];
+  averageRating: number;
+  reviewCount: number;
   owner?: {
     id: string;
     email: string;

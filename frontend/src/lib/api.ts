@@ -4,7 +4,7 @@ import { getCsrfToken } from "./csrf";
 
 const API_BASE_URL = typeof window === 'undefined'
   ? (process.env.INTERNAL_GATEWAY_URL || 'http://gateway:8080')
-  : (process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8080');
+  : (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080');
 
 export const api = axios.create({
   baseURL: API_BASE_URL,

@@ -7,20 +7,29 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class BookingRepository {
   constructor(private prisma: PrismaService) {}
 
-  create(data: CreateBookingDto) {
+  create({ roomId, userId, fromDate, toDate, totalPrice }: CreateBookingDto) {
+    if (!userId) throw new Error('userId is required');
     return this.prisma.booking.create({
       data: {
-        ...data,
-        fromDate: new Date(data.fromDate),
-        toDate: new Date(data.toDate),
+        roomId,
+        userId,
+        totalPrice,
+        fromDate: new Date(fromDate),
+        toDate: new Date(toDate),
         status: 'PENDING',
       },
     });
   }
 
-  findAll() {
+  findAll(userId?: string) {
+    const where = userId ? { userId } : {};
     return this.prisma.booking.findMany({
+      where,
       orderBy: { createdAt: 'desc' },
+      include: {
+        room: true,
+        review: true,
+      },
     });
   }
 

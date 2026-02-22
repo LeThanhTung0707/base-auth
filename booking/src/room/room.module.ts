@@ -10,6 +10,7 @@ import { UserGrpcClientModule } from 'src/grpc/user-grpc-client.module';
   imports: [PrismaModule, AddressGrpcClientModule, UserGrpcClientModule],
   controllers: [RoomController],
   providers: [RoomService, RoomRepository],
+  exports: [RoomRepository],
 })
 export class RoomModule {}
 

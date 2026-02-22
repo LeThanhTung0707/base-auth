@@ -40,4 +40,11 @@ export class RoomRepository {
   delete(id: string) {
     return this.prisma.room.delete({ where: { id } });
   }
+
+  updateRating(id: string, averageRating: number, reviewCount: number) {
+    return this.prisma.room.update({
+      where: { id },
+      data: { averageRating, reviewCount },
+    });
+  }
 }

@@ -9,6 +9,7 @@ import { RoomHeader } from "@/components/organisms/RoomDetail/RoomHeader";
 import { HostInfo } from "@/components/organisms/RoomDetail/HostInfo";
 import { Amenities } from "@/components/organisms/RoomDetail/Amenities";
 import { BookingWidget } from "@/components/organisms/RoomDetail/BookingWidget";
+import { ReviewList } from "@/components/organisms/RoomDetail/ReviewList";
 import { Spinner } from "@/components/ui/spinner";
 import { toast } from "react-toastify";
 
@@ -102,13 +103,16 @@ export default function RoomDetailPage() {
 
             <Amenities />
             
-            {/* Reviews Placeholder */}
-            {/* <Reviews /> */}
+            <ReviewList 
+              roomId={room.id} 
+              averageRating={room.averageRating || 0} 
+              reviewCount={room.reviewCount || 0} 
+            />
         </div>
 
         {/* Right Column: Booking Widget (Sticky) */}
         <div className="relative">
-             <BookingWidget price={room.price} />
+             <BookingWidget price={room.price} roomId={room.id} />
         </div>
 
       </div>

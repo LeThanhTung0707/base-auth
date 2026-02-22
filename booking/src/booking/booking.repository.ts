@@ -42,10 +42,6 @@ export class BookingRepository {
         }
       },
       orderBy: { createdAt: 'desc' },
-      include: {
-        room: true,
-        review: true,
-      },
     });
   }
 

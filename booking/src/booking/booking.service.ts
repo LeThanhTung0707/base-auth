@@ -6,7 +6,7 @@ import { ClientGrpc } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 
 interface UserServiceGrpc {
-  getUsers(data: { userIds: string[] }): any;
+  getUsers(data: { ids: string[] }): any;
 }
 
 @Injectable()
@@ -43,7 +43,7 @@ export class BookingService implements OnModuleInit {
     try {
       // Fetch users via gRPC
       const response: any = await firstValueFrom(
-        this.userService.getUsers({ userIds }),
+        this.userService.getUsers({ ids: userIds }),
       );
 
       // Map users to bookings

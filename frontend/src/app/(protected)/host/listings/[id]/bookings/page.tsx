@@ -12,6 +12,28 @@ import { ArrowLeft, UserCircle2 } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
+const getStayStatus = (booking: Booking) => {
+  if (booking.status === 'CANCELED') {
+    return { label: 'Đã hủy', color: 'bg-red-100 text-red-700' };
+  }
+  
+  const now = new Date();
+  const start = new Date(booking.fromDate);
+  const end = new Date(booking.toDate);
+  
+  // Set times to midnight to ensure clean day comparisons
+  start.setHours(0,0,0,0);
+  end.setHours(23,59,59,999);
+  
+  if (now < start) {
+    return { label: 'Sắp tới', color: 'bg-blue-100 text-blue-700' };
+  } else if (now > end) {
+    return { label: 'Đã trả phòng', color: 'bg-gray-100 text-gray-700' };
+  } else {
+    return { label: 'Đang lưu trú', color: 'bg-green-100 text-green-700' };
+  }
+};
+
 export default function HostRoomBookingsPage() {
   const params = useParams();
   const roomId = params?.id as string;
@@ -90,14 +112,15 @@ export default function HostRoomBookingsPage() {
                   <th className="py-3 px-4">Khách hàng</th>
                   <th className="py-3 px-4">Nhận phòng</th>
                   <th className="py-3 px-4">Trả phòng</th>
-                  <th className="py-3 px-4">Trạng thái</th>
+                  <th className="py-3 px-4">Thanh toán</th>
+                  <th className="py-3 px-4">Lưu trú</th>
                   <th className="py-3 px-4 text-right">Tổng tiền</th>
                 </tr>
               </thead>
               <tbody className="divide-y relative">
                 {bookings.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="py-10 text-center text-muted-foreground">
+                    <td colSpan={6} className="py-10 text-center text-muted-foreground">
                       Chưa có ai đặt phòng này.
                     </td>
                   </tr>
@@ -138,6 +161,16 @@ export default function HostRoomBookingsPage() {
                               'bg-red-100 text-red-700'}`}>
                           {booking.status}
                         </span>
+                      </td>
+                      <td className="py-3 px-4">
+                        {(() => {
+                          const stay = getStayStatus(booking);
+                          return (
+                            <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${stay.color}`}>
+                              {stay.label}
+                            </span>
+                          );
+                        })()}
                       </td>
                       <td className="py-3 px-4 text-right font-medium">
                         {formatCurrency(booking.totalPrice)}

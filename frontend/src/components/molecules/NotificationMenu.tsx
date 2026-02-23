@@ -11,39 +11,41 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 
-// Mock data for notifications
-const notifications = [
-  {
-    id: 1,
-    title: "Welcome to ThanhTung-AllInOne!",
-    description: "Start exploring amazing places to stay.",
-    time: "2 hours ago",
-    read: false,
-  },
-  {
-    id: 2,
-    title: "Profile Update",
-    description: "Your profile was successfully updated.",
-    time: "1 day ago",
-    read: true,
-  },
-  {
-      id: 3,
-      title: "New feature!",
-      description: "Check out our new Food experiences.",
-      time: "2 days ago",
-      read: true
-  }
-];
+import { useAuthQuery } from "@/hooks/useAuthQuery";
+import NotificationService, { Notification } from "@/services/notification.service";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useNotificationSocket } from "@/hooks/useNotificationSocket";
 
 export function NotificationMenu() {
+  const { data: user } = useAuthQuery();
+  const queryClient = useQueryClient();
+  
+  // Activate WebSockets listener natively mapping onto React Query invalidations
+  useNotificationSocket();
+
+  const { data: notifications = [] } = useQuery({
+    queryKey: ['notifications', user?.id],
+    queryFn: () => NotificationService.getNotifications(),
+    enabled: !!user?.id,
+  });
+
+  const markAsReadMutation = useMutation({
+    mutationFn: (id: string) => NotificationService.markAsRead(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['notifications', user?.id] });
+    },
+  });
+
+  const unreadCount = notifications.filter((n) => !n.isRead).length;
+
   return (
-    <DropdownMenu>
+    <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon" className="rounded-full relative">
           <Bell className="h-5 w-5" />
-          {/* Unread indicator mockup */}
-          <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-red-500 animate-pulse block" />
+          {unreadCount > 0 && (
+            <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-red-500 animate-pulse block" />
+          )}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-80">
@@ -59,15 +61,20 @@ export function NotificationMenu() {
                     <DropdownMenuItem
                         key={notification.id}
                         className="flex flex-col items-start gap-1 p-3 cursor-pointer"
+                        onClick={() => {
+                          if (!notification.isRead) {
+                            markAsReadMutation.mutate(notification.id);
+                          }
+                        }}
                     >
                         <div className="flex justify-between w-full">
-                            <span className={`font-medium ${!notification.read ? "text-primary" : ""}`}>
+                            <span className={`font-medium ${!notification.isRead ? "text-primary font-bold" : ""}`}>
                                 {notification.title}
                             </span>
-                            <span className="text-xs text-muted-foreground">{notification.time}</span>
+                            <span className="text-xs text-muted-foreground">{new Date(notification.createdAt).toLocaleDateString()}</span>
                         </div>
-                        <p className="text-sm text-muted-foreground line-clamp-2">
-                            {notification.description}
+                        <p className={`text-sm line-clamp-2 ${!notification.isRead ? "text-foreground" : "text-muted-foreground"}`}>
+                            {notification.message}
                         </p>
                     </DropdownMenuItem>
                 ))

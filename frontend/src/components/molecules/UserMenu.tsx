@@ -33,7 +33,7 @@ export function UserMenu() {
     .join("") || user?.email?.[0].toUpperCase() || "U";
 
   return (
-    <DropdownMenu>
+    <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
         <div className="flex items-center gap-2 border rounded-full p-1 pl-3 hover:shadow-md transition-shadow cursor-pointer bg-background">
           <Menu className="w-4 h-4" />

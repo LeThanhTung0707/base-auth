@@ -74,6 +74,23 @@ services:
     extra_hosts:
       - "localhost:host-gateway"
 
+  notification:
+    build:
+      context: .
+      dockerfile: notification/Dockerfile
+      target: dev
+    command: sh -c "npx prisma migrate deploy && npm run start:dev"
+    volumes:
+      - ./notification:/app
+      - /app/node_modules
+    environment:
+      NODE_ENV: development
+      PORT: 4003
+      DATABASE_URL: postgresql://user:password@postgres:5432/notification_db?schema=public
+      RABBITMQ_URL: amqp://user:password@rabbitmq:5672
+    ports:
+      - "4003:4003"
+
   gateway:
     build:
       context: .
@@ -98,6 +115,15 @@ services:
     ports:
       - "8080:8080"
 
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
+
   localstack:
     image: localstack/localstack:latest
     ports:
@@ -106,6 +132,7 @@ services:
     environment:
       - SERVICES=s3
       - DEBUG=1
+      - PERSISTENCE=1
       - DATA_DIR=/tmp/localstack/data
       - DOCKER_HOST=unix:///var/run/docker.sock
     volumes:

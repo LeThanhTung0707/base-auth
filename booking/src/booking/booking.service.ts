@@ -2,7 +2,7 @@ import { Injectable, NotFoundException, Inject, OnModuleInit } from '@nestjs/com
 import { BookingRepository } from './booking.repository';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingDto } from './dto/update-booking.dto';
-import { ClientGrpc } from '@nestjs/microservices';
+import { ClientGrpc, ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 
 interface UserServiceGrpc {
@@ -16,14 +16,24 @@ export class BookingService implements OnModuleInit {
   constructor(
     private readonly repo: BookingRepository,
     @Inject('USER_SERVICE') private client: ClientGrpc,
+    @Inject('NOTIFICATION_SERVICE') private notificationClient: ClientProxy,
   ) {}
 
   onModuleInit() {
     this.userService = this.client.getService<UserServiceGrpc>('UserService');
   }
 
-  create(dto: CreateBookingDto) {
-    return this.repo.create(dto);
+  async create(dto: CreateBookingDto) {
+    const booking = await this.repo.create(dto);
+    
+    // Asynchronously dispatch notification creation event to RabbitMQ
+    this.notificationClient.emit('booking.created', {
+      userId: booking.userId,
+      bookingId: booking.id,
+      roomName: 'your requested room', // Room string will populate placeholder
+    });
+    
+    return booking;
   }
 
   findAll(userId?: string) {

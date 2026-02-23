@@ -1,5 +1,6 @@
 import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
 import { createProxyMiddleware } from 'http-proxy-middleware';
+import { json } from 'express';
 import { S3Service } from './s3.service';
 import { UploadController } from './upload.controller';
 
@@ -20,6 +21,8 @@ export class AppModule implements NestModule {
       delete proxyRes.headers['access-control-allow-headers'];
       delete proxyRes.headers['access-control-allow-credentials'];
     };
+
+    consumer.apply(json()).forRoutes('/upload');
 
     consumer
       .apply(

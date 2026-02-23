@@ -70,6 +70,17 @@ export class S3Service {
     }
   }
 
+  async uploadFiles(files: Multer.File[]): Promise<string[]> {
+    try {
+      const uploadPromises = files.map(file => this.uploadFile(file));
+      const urls = await Promise.all(uploadPromises);
+      return urls;
+    } catch (error) {
+      this.logger.error("Batch S3 Upload Failed", error);
+      throw error;
+    }
+  }
+
   async deleteFile(key: string): Promise<void> {
     try {
       await this.s3Client.send(new DeleteObjectCommand({

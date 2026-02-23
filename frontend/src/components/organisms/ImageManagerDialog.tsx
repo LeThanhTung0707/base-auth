@@ -38,11 +38,7 @@ export function ImageManagerDialog({
 
     setUploading(true);
     try {
-      const uploadedUrls: string[] = [];
-      for (const file of files) {
-        const url = await UploadService.uploadImage(file);
-        uploadedUrls.push(url);
-      }
+      const uploadedUrls = await UploadService.uploadImages(files);
 
       const newImages = [...currentImages, ...uploadedUrls];
       await RoomService.updateRoomImages(roomId, newImages);

@@ -88,6 +88,7 @@ services:
       PORT: 4003
       DATABASE_URL: postgresql://user:password@postgres:5432/notification_db?schema=public
       RABBITMQ_URL: amqp://user:password@rabbitmq:5672
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET}
     ports:
       - "4003:4003"
 

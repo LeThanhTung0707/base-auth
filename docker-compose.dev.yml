@@ -123,6 +123,7 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: user
       RABBITMQ_DEFAULT_PASS: password
+      RABBITMQ_ERLANG_COOKIE: "secretcookie1234567890"
 
   localstack:
     image: localstack/localstack:latest

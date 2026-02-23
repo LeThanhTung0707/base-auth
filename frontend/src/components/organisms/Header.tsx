@@ -46,16 +46,18 @@ export function Header() {
   }, []);
 
   return (
-    <header 
-        className={cn(
-            "sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur-xs transition-all duration-300 ease-in-out",
-            isScrolled ? "h-20 shadow-sm" : "h-40"
-        )}
-    >
-      <div className="container mx-auto px-4 h-full flex flex-col justify-between relative">
-        
-        {/* Top Row: Logo - Center - UserMenu */}
-        <div className="grid grid-cols-[1fr_auto_1fr] items-center pt-4 relative z-20">
+    <>
+      <div className="h-40 shrink-0 w-full bg-transparent pointer-events-none" aria-hidden="true" />
+      <header 
+          className={cn(
+              "fixed top-0 z-50 w-full border-b bg-background/95 backdrop-blur-xs transition-all duration-300 ease-in-out",
+              isScrolled ? "h-20 shadow-sm" : "h-40"
+          )}
+      >
+        <div className="container mx-auto px-4 h-full flex flex-col justify-between relative">
+          
+          {/* Top Row: Logo - Center - UserMenu */}
+          <div className="grid grid-cols-[1fr_auto_1fr] items-center pt-4 relative z-20">
             {/* Logo */}
             <div className="flex justify-start">
                 <Logo />
@@ -130,5 +132,6 @@ export function Header() {
         </div>
       </div>
     </header>
-  );
+  </>
+);
 }

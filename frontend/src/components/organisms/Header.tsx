@@ -17,14 +17,18 @@ import { useRouter, usePathname } from "next/navigation";
 import { FoodSearchBar } from "@/components/molecules/FoodSearchBar";
 import { JobSearchBar } from "@/components/molecules/JobSearchBar";
 import { SsoSearchBar } from "@/components/molecules/SsoSearchBar";
+import { CarSearchBar } from "@/components/molecules/CarSearchBar";
 
 export function Header() {
   const { user } = useAuthStore();
   const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
-  const isFoodPage = pathname === "/food";
-  const isJobsPage = pathname === "/jobs";
-  const isSsoPage = pathname === "/sso";
+  const isFoodPage = pathname?.startsWith("/food");
+  const isJobsPage = pathname?.startsWith("/jobs");
+  const isSsoPage = pathname?.startsWith("/sso");
+  const isCarPage = pathname?.startsWith("/car");
+  const isStaysService = pathname === "/" || pathname?.startsWith("/rooms") || pathname?.startsWith("/book") || pathname?.startsWith("/host");
+
   const queryClient = useQueryClient();
   const router = useRouter();
   const [loadingHost, setLoadingHost] = useState(false);
@@ -56,6 +60,7 @@ export function Header() {
     if (isFoodPage) return <FoodSearchBar compact />;
     if (isJobsPage) return <JobSearchBar compact />;
     if (isSsoPage) return <SsoSearchBar compact />;
+    if (isCarPage) return <CarSearchBar compact />;
     return <SearchBar compact />;
   };
 
@@ -63,6 +68,7 @@ export function Header() {
     if (isFoodPage) return <FoodSearchBar />;
     if (isJobsPage) return <JobSearchBar />;
     if (isSsoPage) return <SsoSearchBar />;
+    if (isCarPage) return <CarSearchBar />;
     return <SearchBar />;
   };
 
@@ -80,7 +86,8 @@ export function Header() {
               "fixed top-0 z-50 w-full border-b bg-background/95 backdrop-blur-xs transition-all duration-300 ease-in-out",
               isScrolled ? "h-20 shadow-sm" : "h-40",
               isJobsPage && "border-blue-100",
-              isSsoPage && "border-purple-100"
+              isSsoPage && "border-purple-100",
+              isCarPage && "border-blue-50"
           )}
       >
         <div className="container mx-auto px-4 h-full flex flex-col justify-between relative">
@@ -119,19 +126,21 @@ export function Header() {
             <div className="flex justify-end items-center gap-2">
                 {user ? (
                   <>
-                    {user?.roles?.includes('HOST') ? (
-                      <Link href="/host/listings" className="text-sm font-semibold hover:bg-muted px-4 py-2 rounded-full transition-colors whitespace-nowrap">
-                            Quản lý căn hiện có
-                      </Link>
-                    ) : (
-                      <Button 
-                        variant="ghost" 
-                        className="hidden md:flex rounded-full" 
-                        onClick={handleBecomeHost}
-                        disabled={loadingHost}
-                      >
-                         {loadingHost ? "Đang xử lý..." : "Trở thành người cho thuê"}
-                      </Button>
+                    {isStaysService && (
+                      user?.roles?.includes('HOST') ? (
+                        <Link href="/host/listings" className="text-sm font-semibold hover:bg-muted px-4 py-2 rounded-full transition-colors whitespace-nowrap">
+                              Quản lý căn hiện có
+                        </Link>
+                      ) : (
+                        <Button 
+                          variant="ghost" 
+                          className="hidden md:flex rounded-full" 
+                          onClick={handleBecomeHost}
+                          disabled={loadingHost}
+                        >
+                           {loadingHost ? "Đang xử lý..." : "Trở thành người cho thuê"}
+                        </Button>
+                      )
                     )}
                     <NotificationMenu />
                     <UserMenu />

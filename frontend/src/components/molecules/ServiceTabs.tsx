@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 
 export function ServiceTabs() {
   const pathname = usePathname();
+  const isFood = pathname === "/food";
   const isJobs = pathname === "/jobs";
   const isSso = pathname === "/sso";
   const isStays = pathname === "/";

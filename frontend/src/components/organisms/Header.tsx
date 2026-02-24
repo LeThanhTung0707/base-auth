@@ -16,6 +16,7 @@ import { toast } from "react-toastify";
 import { useRouter, usePathname } from "next/navigation";
 import { FoodSearchBar } from "@/components/molecules/FoodSearchBar";
 import { JobSearchBar } from "@/components/molecules/JobSearchBar";
+import { SsoSearchBar } from "@/components/molecules/SsoSearchBar";
 
 export function Header() {
   const { user } = useAuthStore();
@@ -23,6 +24,7 @@ export function Header() {
   const pathname = usePathname();
   const isFoodPage = pathname === "/food";
   const isJobsPage = pathname === "/jobs";
+  const isSsoPage = pathname === "/sso";
   const queryClient = useQueryClient();
   const router = useRouter();
   const [loadingHost, setLoadingHost] = useState(false);
@@ -53,12 +55,14 @@ export function Header() {
   const renderCompactSearch = () => {
     if (isFoodPage) return <FoodSearchBar compact />;
     if (isJobsPage) return <JobSearchBar compact />;
+    if (isSsoPage) return <SsoSearchBar compact />;
     return <SearchBar compact />;
   };
 
   const renderLargeSearch = () => {
     if (isFoodPage) return <FoodSearchBar />;
     if (isJobsPage) return <JobSearchBar />;
+    if (isSsoPage) return <SsoSearchBar />;
     return <SearchBar />;
   };
 
@@ -75,7 +79,8 @@ export function Header() {
           className={cn(
               "fixed top-0 z-50 w-full border-b bg-background/95 backdrop-blur-xs transition-all duration-300 ease-in-out",
               isScrolled ? "h-20 shadow-sm" : "h-40",
-              isJobsPage && "border-blue-100"
+              isJobsPage && "border-blue-100",
+              isSsoPage && "border-purple-100"
           )}
       >
         <div className="container mx-auto px-4 h-full flex flex-col justify-between relative">

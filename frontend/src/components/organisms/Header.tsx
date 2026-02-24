@@ -13,11 +13,14 @@ import { cn } from "@/lib/utils";
 import { UserService } from "@/services/user.service";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
+import { FoodSearchBar } from "@/components/molecules/FoodSearchBar";
 
 export function Header() {
   const { user } = useAuthStore();
   const [isScrolled, setIsScrolled] = useState(false);
+  const pathname = usePathname();
+  const isFoodPage = pathname === "/food";
   const queryClient = useQueryClient();
   const router = useRouter();
   const [loadingHost, setLoadingHost] = useState(false);
@@ -47,7 +50,7 @@ export function Header() {
 
   return (
     <>
-      <div className="h-40 shrink-0 w-full bg-transparent pointer-events-none" aria-hidden="true" />
+      <div className={cn("shrink-0 w-full bg-transparent pointer-events-none transition-all duration-300", isScrolled ? "h-20" : "h-40")} aria-hidden="true" />
       <header 
           className={cn(
               "fixed top-0 z-50 w-full border-b bg-background/95 backdrop-blur-xs transition-all duration-300 ease-in-out",
@@ -82,7 +85,7 @@ export function Header() {
                         isScrolled ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-75 pointer-events-none translate-y-4"
                     )}
                  >
-                     <SearchBar compact />
+                     {isFoodPage ? <FoodSearchBar compact /> : <SearchBar compact />}
                  </div>
             </div>
             
@@ -128,7 +131,7 @@ export function Header() {
                 isScrolled ? "opacity-0 scale-50 pointer-events-none -translate-y-10" : "opacity-100 scale-100 translate-y-0"
             )}
         >
-            <SearchBar />
+            {isFoodPage ? <FoodSearchBar /> : <SearchBar />}
         </div>
       </div>
     </header>

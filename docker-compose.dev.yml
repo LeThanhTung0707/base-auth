@@ -40,6 +40,7 @@ services:
       AWS_S3_ENDPOINT: http://localstack:4566
       AWS_BUCKET_NAME: rooms-bucket
       AWS_FORCE_PATH_STYLE: "true"
+      RABBITMQ_URL: amqp://user:password@rabbitmq:5672
 
   address:
     build:

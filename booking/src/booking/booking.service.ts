@@ -30,8 +30,22 @@ export class BookingService implements OnModuleInit {
     this.notificationClient.emit('booking.created', {
       userId: booking.userId,
       bookingId: booking.id,
-      roomName: 'your requested room', // Room string will populate placeholder
+      roomName: booking.room?.name || 'your requested room',
+    }).subscribe({
+      next: () => console.log('Notification emitted successfully (user)'),
+      error: (err) => console.error('Failed to emit user notification:', err)
     });
+
+    if (booking.room?.ownerId) {
+      this.notificationClient.emit('booking.received', {
+        hostId: booking.room.ownerId,
+        bookingId: booking.id,
+        roomName: booking.room.name || 'your room',
+      }).subscribe({
+        next: () => console.log('Notification emitted successfully (host)'),
+        error: (err) => console.error('Failed to emit host notification:', err)
+      });
+    }
     
     return booking;
   }

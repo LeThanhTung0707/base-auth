@@ -18,6 +18,7 @@ export class BookingRepository {
         toDate: new Date(toDate),
         status: 'PENDING',
       },
+      include: { room: true },
     });
   }
 

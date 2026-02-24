@@ -1,4 +1,4 @@
-const API_URL = process.env.NEXT_PUBLIC_API_GATEWAY_URL || 'http://localhost:8080';
+import { api } from '@/lib/api';
 
 export interface Notification {
   id: string;
@@ -12,29 +12,13 @@ export interface Notification {
 
 class NotificationService {
   async getNotifications(): Promise<Notification[]> {
-    const res = await fetch(`${API_URL}/notifications`, {
-      method: 'GET',
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-    });
-
-    if (!res.ok) {
-      throw new Error('Failed to fetch notifications');
-    }
-    return res.json();
+    const res = await api.get('/notifications');
+    return res.data;
   }
 
   async markAsRead(id: string): Promise<Notification> {
-    const res = await fetch(`${API_URL}/notifications/${id}/read`, {
-      method: 'PATCH',
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-    });
-
-    if (!res.ok) {
-      throw new Error('Failed to mark notification as read');
-    }
-    return res.json();
+    const res = await api.patch(`/notifications/${id}/read`);
+    return res.data;
   }
 }
 

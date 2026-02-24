@@ -15,6 +15,13 @@ export class AppController {
     await this.appService.createNotification(data.userId, title, message, 'BOOKING');
   }
 
+  @EventPattern('booking.received')
+  async handleBookingReceived(@Payload() data: { hostId: string; bookingId: string; roomName?: string }) {
+    const title = 'New Booking Received!';
+    const message = `Someone has booked ${data.roomName || 'your room'}. Booking ID: ${data.bookingId}`;
+    await this.appService.createNotification(data.hostId, title, message, 'BOOKING');
+  }
+
   @Get()
   @UseGuards(AuthGuard)
   async getUserNotifications(@User() user: { sub: string }) {

@@ -15,12 +15,14 @@ import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { useRouter, usePathname } from "next/navigation";
 import { FoodSearchBar } from "@/components/molecules/FoodSearchBar";
+import { JobSearchBar } from "@/components/molecules/JobSearchBar";
 
 export function Header() {
   const { user } = useAuthStore();
   const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
   const isFoodPage = pathname === "/food";
+  const isJobsPage = pathname === "/jobs";
   const queryClient = useQueryClient();
   const router = useRouter();
   const [loadingHost, setLoadingHost] = useState(false);
@@ -48,13 +50,32 @@ export function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const renderCompactSearch = () => {
+    if (isFoodPage) return <FoodSearchBar compact />;
+    if (isJobsPage) return <JobSearchBar compact />;
+    return <SearchBar compact />;
+  };
+
+  const renderLargeSearch = () => {
+    if (isFoodPage) return <FoodSearchBar />;
+    if (isJobsPage) return <JobSearchBar />;
+    return <SearchBar />;
+  };
+
   return (
     <>
-      <div className={cn("shrink-0 w-full bg-transparent pointer-events-none transition-all duration-300", isScrolled ? "h-20" : "h-40")} aria-hidden="true" />
+      <div 
+        className={cn(
+            "shrink-0 w-full bg-transparent pointer-events-none transition-all duration-300", 
+            isScrolled ? "h-20" : "h-40"
+        )} 
+        aria-hidden="true" 
+      />
       <header 
           className={cn(
               "fixed top-0 z-50 w-full border-b bg-background/95 backdrop-blur-xs transition-all duration-300 ease-in-out",
-              isScrolled ? "h-20 shadow-sm" : "h-40"
+              isScrolled ? "h-20 shadow-sm" : "h-40",
+              isJobsPage && "border-blue-100"
           )}
       >
         <div className="container mx-auto px-4 h-full flex flex-col justify-between relative">
@@ -85,7 +106,7 @@ export function Header() {
                         isScrolled ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-75 pointer-events-none translate-y-4"
                     )}
                  >
-                     {isFoodPage ? <FoodSearchBar compact /> : <SearchBar compact />}
+                     {renderCompactSearch()}
                  </div>
             </div>
             
@@ -131,7 +152,7 @@ export function Header() {
                 isScrolled ? "opacity-0 scale-50 pointer-events-none -translate-y-10" : "opacity-100 scale-100 translate-y-0"
             )}
         >
-            {isFoodPage ? <FoodSearchBar /> : <SearchBar />}
+            {renderLargeSearch()}
         </div>
       </div>
     </header>

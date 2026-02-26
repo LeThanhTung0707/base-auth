@@ -15,6 +15,7 @@ export class AppModule implements NestModule {
     const bookingUrl = process.env.BOOKING_SERVICE_URL || 'http://booking:4001';
     const addressUrl = process.env.ADDRESS_SERVICE_URL || 'http://address:4002';
     const notificationUrl = process.env.NOTIFICATION_SERVICE_URL || 'http://notification:4003';
+    const foodUrl = process.env.FOOD_SERVICE_URL || 'http://food:4004';
 
     const removeCorsHeaders = (proxyRes) => {
       delete proxyRes.headers['access-control-allow-origin'];
@@ -64,5 +65,15 @@ export class AppModule implements NestModule {
         }),
       )
       .forRoutes('/notifications');
+
+    consumer
+      .apply(
+        createProxyMiddleware({
+          target: foodUrl,
+          changeOrigin: true,
+          onProxyRes: removeCorsHeaders,
+        }),
+      )
+      .forRoutes('/restaurants', '/menu');
   }
 }

@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   backend:
     build:
@@ -93,6 +91,24 @@ services:
     ports:
       - "4003:4003"
 
+  food:
+    build:
+      context: .
+      dockerfile: food/Dockerfile
+      target: dev
+    command: sh -c "npx prisma migrate deploy && npm run start:dev"
+    volumes:
+      - ./food:/app
+      - /app/node_modules
+    environment:
+      NODE_ENV: development
+      PORT: 4004
+      DATABASE_URL: postgresql://user:password@postgres:5432/food_db?schema=public
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    ports:
+      - "4004:4004"
+
   gateway:
     build:
       context: .
@@ -107,6 +123,7 @@ services:
       BACKEND_SERVICE_URL: http://backend:4000
       BOOKING_SERVICE_URL: http://booking:4001
       ADDRESS_SERVICE_URL: http://address:4002
+      FOOD_SERVICE_URL: http://food:4004
       AWS_REGION: us-east-1
       AWS_ACCESS_KEY_ID: test
       AWS_SECRET_ACCESS_KEY: test

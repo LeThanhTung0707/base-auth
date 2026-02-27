@@ -109,6 +109,24 @@ services:
     ports:
       - "4004:4004"
 
+  car:
+    build:
+      context: .
+      dockerfile: car/Dockerfile
+      target: dev
+    command: sh -c "npx prisma migrate deploy && npm run start:dev"
+    volumes:
+      - ./car:/app
+      - /app/node_modules
+    environment:
+      NODE_ENV: development
+      PORT: 4005
+      DATABASE_URL: postgresql://user:password@postgres:5432/car_db?schema=public
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    ports:
+      - "4005:4005"
+
   gateway:
     build:
       context: .
@@ -124,6 +142,7 @@ services:
       BOOKING_SERVICE_URL: http://booking:4001
       ADDRESS_SERVICE_URL: http://address:4002
       FOOD_SERVICE_URL: http://food:4004
+      CAR_SERVICE_URL: http://car:4005
       AWS_REGION: us-east-1
       AWS_ACCESS_KEY_ID: test
       AWS_SECRET_ACCESS_KEY: test
